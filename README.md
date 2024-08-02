@@ -17,9 +17,9 @@ Ver versiones:
 * Git ```git -v```
 
 Plugins para VSC:
-| Versión Lens |    TypeScript Importer    | Paste JSON as Code
-| JSON Crack   |    Image preview          | Fluent Icons
-| Error Lens   |    Console Ninja          | Better Comments
-| Auto Import  |    Auto Close Tag         | Angular Language Service
+| Versión Lens | TypeScript Importer | Paste JSON as Code
+| JSON Crack | Image preview | Fluent Icons
+| Error Lens | Console Ninja | Better Comments
+| Auto Import | Auto Close Tag | Angular Language Service
 | EditorConfig for VS Code
 
