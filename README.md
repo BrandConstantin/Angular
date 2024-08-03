@@ -2,6 +2,8 @@
 Angular de cero a experto
 [Curso udemy](https://www.udemy.com/course/angular-fernando-herrera/)
 
+Empezar con TypeScript [TypeScript](https://github.com/BrandConstantin/TypeScript)
+
 Ver versiones:
 * Node ```node -v```
     * Update node:
