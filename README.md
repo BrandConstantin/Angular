@@ -15,6 +15,15 @@ Ver versiones:
         * abrir PowerShell como administrador ```Set-ExecutionPolicy Unrestricted -Scope CurrentUser -Force```
         * subir de versión ```npm-windows-upgrade```
         * si la versión de node es por encima de 16 ```npm install -g npm```
+        * otras formas de actualizar npm 
+        ```
+        npm uninstall --save-dev @angular/cli
+        npm install --save-dev @angular/cli@latest
+        npm install
+        ```
+* Instalar Angular CLI 
+  ```npm install -g @angular/cli@latest
+     Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned```
 * Angular CLI ```ng v```
 * Git ```git -v```
 
@@ -35,7 +44,8 @@ Pero para trabajar de forma tradicional como lo vieron en el curso:
 ```ng new <nombre de la aplicación> --standalone false```
 
 ## Primer proycto
-Crar proyecto: ```ng new bases --no-standalone``` -> y escribir no
+Crar proyecto: ```ng new newNameapp --no-standalone``` -> y escribir no
+Instalar dependencias ```npm i```
 Lanzar aplicación con: ```ng serve -o``` -> para abrir en navegador
 
 Explicación de cada archivo:
