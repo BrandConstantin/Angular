@@ -259,5 +259,11 @@ TS:
     this.characters.update(
       (list) => [...list, newCharacter]
     );
-  }```
+  }
+```
 
+### outputs
+TS: 
+```newCharacter = output<Character>();```
+HTML:
+```<character-add (newCharacter="addCharacter($event)")></character-add>```
