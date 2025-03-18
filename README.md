@@ -264,6 +264,88 @@ TS:
 
 ### outputs
 TS: 
-```newCharacter = output<Character>();```
+```
+newCharacter = output<Character>();
+```
 HTML:
-```<character-add (newCharacter="addCharacter($event)")></character-add>```
+```
+<character-add (newCharacter="addCharacter($event)")></character-add>
+```
+
+### Servicios
+HTML:
+```
+  <div class="col-12 col-sm-6">
+    <character-add (newCharacter)="dragonballService.addCharacter($event)"></character-add>
+  </div>
+
+
+
+  <div class="col-12 col-sm-6">
+    <dragonball-character-list listName="Listado de personajes" [characters]="dragonballService.characters()" />
+  </div>
+```
+TS - injectar dependencias:
+```
+  public dragonballService = inject(DragonballService);
+```
+TS - el servicio:
+```
+@Injectable({providedIn: 'root'})
+export class DragonballService {
+  characters = signal<Character[]>([
+    {id: 1, name: 'Goku', power: 9001},
+    {id: 1, name: 'Vegeta', power: 8060},
+  ]);
+
+  addCharacter(character: Character){
+    this.characters.update(
+      (list) => [...list, character]
+    );
+  }
+}
+```
+
+### Efectos y LocalStorage
+Efectos:
+```
+  saveToLocalStorage = effect(() =>{
+    console.log(`Character count ${this.characters().length}`);
+  });
+```
+Almacenamiento local:
+```
+  saveToLocalStorage = effect(() =>{
+    localStorage.setItem('characters', JSON.stringify(this.characters()))
+  });
+```
+
+### LinkedSignal
+Leer desde LocalStorage: 
+```
+  loadFromLocalStorage = (): Character[] => {
+    const characters = localStorage.getItem('characters');
+    return characters ? JSON.parse(characters) : [];
+  }
+
+  characters = signal<Character[]>(this.loadFromLocalStorage());
+```
+
+### Despliegue
+Construir aplicación en modo producción:
+```ng build```
+Ir a servidor prueba: https://app.netlify.com/
+Y subir la carpeta browser creada con ng build que se encuentra en projectName -> dist -> projectName -> browser
+Ir a Netlify -> Sites -> click sobre el proyecto -> Site configuration -> cambiamos la url del proyecto -> click para abrir el proyecto -> https://angular-base02-cbl.netlify.app/#/
+Si se modifica algo se sube otra vez la carpeta browser en Deploys 
+
+### HashRouter
+A la hora de desplegar indicar la ruta principal:
+```
+    // HashStrategy
+    {
+      provide: LocationStrategy,
+      useClass: HashLocationStrategy,
+    },
+```
+
