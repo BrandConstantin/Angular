@@ -349,3 +349,15 @@ A la hora de desplegar indicar la ruta principal:
     },
 ```
 
+Webs recomendada para la ayuda de crear una aplicación en Angular:
+* https://tailwindcss.com/ -> ir a Framework Guides -> seleccionamos Angular -> instalamos en el terminal con ```npm install tailwindcss @tailwindcss/postcss postcss --force``` y creamos el archivo llamado ```.postcssrc.json``` en directorio de nuestro proyecto añadiendo la configuración ```
+{
+  "plugins": {
+    "@tailwindcss/postcss": {}
+  }
+}
+```
+-> el último paso añadir en nuestro archivo ```./src/styles.css``` la importación ```@import "tailwindcss";```
+* https://www.creative-tim.com/twcomponents/component/dashboard-navigation -> en Show Code copiar lo que  hay en el div para este ejemplo
+
+
