@@ -350,7 +350,8 @@ A la hora de desplegar indicar la ruta principal:
 ```
 
 Webs recomendada para la ayuda de crear una aplicación en Angular:
-* https://tailwindcss.com/ -> ir a Framework Guides -> seleccionamos Angular -> instalamos en el terminal con ```npm install tailwindcss @tailwindcss/postcss postcss --force``` y creamos el archivo llamado ```.postcssrc.json``` en directorio de nuestro proyecto añadiendo la configuración ```
+* https://tailwindcss.com/ -> ir a Framework Guides -> seleccionamos Angular -> instalamos en el terminal con ```npm install tailwindcss @tailwindcss/postcss postcss --force``` y creamos el archivo llamado ```.postcssrc.json``` en directorio de nuestro proyecto añadiendo la configuración 
+```
 {
   "plugins": {
     "@tailwindcss/postcss": {}
@@ -358,6 +359,95 @@ Webs recomendada para la ayuda de crear una aplicación en Angular:
 }
 ```
 -> el último paso añadir en nuestro archivo ```./src/styles.css``` la importación ```@import "tailwindcss";```
-* https://www.creative-tim.com/twcomponents/component/dashboard-navigation -> en Show Code copiar lo que  hay en el div para este ejemplo
+* https://www.creative-tim.com/twcomponents/component/dashboard-navigation/ -> en Show Code copiar lo que  hay en el div para este ejemplo
 
+### Rutas Hijas
+```
+export const routes: Routes = [
+  {
+    path: 'dashboard',
+    loadComponent: () => import('./gifs/pages/dashboard-page/dashboard-page.component'),
+    children:[
+      {
+        path: 'trending',
+        loadComponent: () => import('./gifs/pages/trending-page/trending-page.component')
+      },
+      {
+        path: 'search',
+        loadComponent: () => import('./gifs/pages/search-page/search-page.component')
+      },
+      {
+        path: '**',
+        redirectTo: 'trending'
+      }
+    ]
+  },
+  {
+    path: '**',
+    redirectTo: 'dashboard'
+  }
+];
+```
+
+### RouterLinks
+```
+  @for (item of menuOptions; track item.route){
+  <a [routerLink]="item.route" routerLinkActive="bg-blue-800" class="w-full px-2 inline-flex space-x-2 items-center border-b border-slate-700 py-3 hover:bg-white/5 transition ease-linear duration-150">
+      <div>
+        <i [class]="item.icon"></i>
+      </div>
+      <div class="flex flex-col">
+          <span class="text-lg font-bold leading-5 text-white">{{item.label}}</span>
+          <span class="text-sm text-white/50 hidden md:block">{{item.subLabel}}</span>
+      </div>
+  </a>
+  }
+```
+```
+interface MenuOptions{
+  icon: string;
+  label: string;
+  subLabel: string;
+  route: string;
+}
+export class SideMenuOptionsComponent {
+  menuOptions: MenuOptions[] = [
+    {
+      icon: 'fa-slid fa-chart-line',
+      label: 'Trending',
+      subLabel: 'Gifs Populares',
+      route: '/dashboard/trending'
+    },
+    {
+      icon: 'fa-slid fa-magnifying-glass',
+      label: 'Buscador',
+      subLabel: 'Buscar gifs',
+      route: '/dashboard/search'
+    },
+  ];
+}
+```
+
+### Angular Environments
+```ng g environments```
+
+### Path Alias
+En tsconfig.json añadimos:
+```
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@environments/*": ["src/evironments/*"]
+    },
+    ...
+  }
+```
+Esto ayuda a facilitar el path de las importaciones cambiado el
+```
+import { environment } from '../../../../../environments/environment.development';
+```
+por
+```
+import { environment } from 'src/environments/environment';
+```
 
