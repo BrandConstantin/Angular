@@ -451,3 +451,12 @@ por
 import { environment } from 'src/environments/environment';
 ```
 
+### API GIPHY Developers
+-> https://developers.giphy.com/dashboard/?create=true
+-> API: iOSNo9IhwKM8YVRguelW88F7q614yw4l
+-> en explorer: https://developers.giphy.com/explorer/
+-> send request: https://api.giphy.com/v1/gifs/trending?api_key=iOSNo9IhwKM8YVRguelW88F7q614yw4l&limit=25&offset=0&rating=g&bundle=messaging_non_clips
+-> response in giphy.interface.ts
+-> Ver - Paste Json as code en el ts
+
+
