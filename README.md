@@ -452,11 +452,59 @@ import { environment } from 'src/environments/environment';
 ```
 
 ### API GIPHY Developers
+```
 -> https://developers.giphy.com/dashboard/?create=true
 -> API: iOSNo9IhwKM8YVRguelW88F7q614yw4l
 -> en explorer: https://developers.giphy.com/explorer/
 -> send request: https://api.giphy.com/v1/gifs/trending?api_key=iOSNo9IhwKM8YVRguelW88F7q614yw4l&limit=25&offset=0&rating=g&bundle=messaging_non_clips
 -> response in giphy.interface.ts
 -> Ver - Paste Json as code en el ts
+```
+
+### Buscador
+* en el service.ts
+```
+  searchGifs(query: string){
+    return this.http
+      .get<GiphyResponse>(`${environment.urlGiphy}/gifs/search`, {
+        params: {
+          api_key: environment.apiKeyGiphy,
+          limit: 20,
+          q: query
+        }
+      }).pipe(
+        map(({data}) => data),
+        map((items) => GifMapper.mapGiphyItemsToGifArray(items))
+      );
+  }
+```
+* en el componente search-page.component
+```
+<section class="flex flex-col gap-4">
+  <input type="text" placeholder="Buscar Gifs" class="mt-3 border-gray-300 rounded-md p-2"
+    (keyup.enter)="onSearch(txtSearch.value)"
+    #txtSearch/>
+</section>
+
+<section class="py-5">
+  <gifs-list [gifs]="gifs()"></gifs-list>
+</section>
+```
+* componente ts search-page.component
+```
+export default class SearchPageComponent {
+  gifsSearch = inject(GifService)
+  gifs = signal<Gif[]>([])
+
+  onSearch(query: string){
+    this.gifsSearch.searchGifs(query)
+      .subscribe((resp) => {
+        console.log(resp);
+        this.gifs.set(resp)
+      });
+  }
+}
+```
 
 
+### 
