@@ -507,4 +507,29 @@ export default class SearchPageComponent {
 ```
 
 
-### 
+### History y Cache
+```
+  // chache 
+  searchHistory = signal<Record<string, Gif[]>>(loadFromLocalStorage());
+  searchHistoryKeys = computed(() => Object.keys(this.searchHistory()));
+
+  // mostrar historial búsqueda
+  getHistoryGifs(query: string): Gif[]{
+    return this.searchHistory()[query] ?? [];
+  }
+
+  // mantener el historial en el local storage
+  saveGifsToLocalStorage = effect(() => {
+    const historyString = JSON.stringify(this.searchHistory());
+    localStorage.setItem(GIF_KEY, historyString);
+  });
+
+  // cargar el historial del local storage
+  const loadFromLocalStorage = () => {
+    const gifsFromLocalStorage = localStorage.getItem(GIF_KEY) ?? '{}'; //Record<string, gifs[]>
+    const gifs = JSON.parse(gifsFromLocalStorage);
+    console.log(gifs);
+    return gifs;
+  };
+```
+

@@ -1,16 +1,16 @@
-import type { Gif } from "../interfaces/gif.interface";
-import type { GiphyItem } from "../interfaces/giphy.interface";
+import { Gif } from '../interfaces/gif.interface';
+import { GiphyItem } from './../interfaces/giphy.interfaces';
 
-export class GifMapper{
+export class GifMapper {
   static mapGiphyItemToGif(item: GiphyItem): Gif {
-    return{
+    return {
       id: item.id,
       title: item.title,
-      url: item.images.original.url
+      url: item.images.original.url,
     };
   }
 
-  static mapGiphyItemsToGifArray(items: GiphyItem[]): Gif[]{
+  static mapGiphyItemsToGifArray(items: GiphyItem[]): Gif[] {
     return items.map(this.mapGiphyItemToGif);
   }
 }
