@@ -624,4 +624,29 @@ scrollDivRef = viewChild<ElementRef<HTMLDivElement>>('scrollDiv');
   }
 ```
 
+#### Preservar posición scroll navegando entre páginas
+* crear nuevo servicio
+```
+@Injectable({providedIn: 'root'})
+export class ScrollStateService {
+    trendingScrollPosition = signal(0);
+}
+```
+* cambiar el componente
+```
+export default class TrendingPageComponent implements AfterViewInit {
+
+  ngAfterViewInit(): void {
+    const scrollDiv = this.scrollDivRef()?.nativeElement;
+    if(!scrollDiv) return;
+
+    scrollDiv.scrollTop = this.scrollStateService.trendingScrollPosition();
+  }
+
+  scrollStateService = inject(ScrollStateService);
+
+  this.scrollStateService.trendingScrollPosition.set(scrollTop);
+}
+```
+
 ### DevTools
