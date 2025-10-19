@@ -570,6 +570,58 @@ export default class SearchPageComponent {
 ```
 
 ### InfiniteScroll
+```
+<div class="h-screen overflow-y-scroll grid grid-cols-2 md:grid-cols-4 gap-4 pt-5"
+  (scroll)="onScroll($event)"
+  #groupDiv>
 
+  ...
+</div>
+
+....................
+// en el service
+private currentPage = signal(0);
+
+loadTrendingGifs() {
+  if(this.trendingGifsLoading()) return;
+  this.trendingGifsLoading.set(true);
+
+  this.http
+    .get<GiphyResponse>(`${environment.giphyUrl}/gifs/trending`, {
+      params: {
+        api_key: environment.giphyApiKey,
+        limit: 20,
+        offset: this.currentPage() * 20,
+      },
+    })
+    .subscribe((resp) => {
+      const gifs = GifMapper.mapGiphyItemsToGifArray(resp.data);
+      this.trendingGifs.update(currentGifs =>[...currentGifs, ...gifs]);
+      this.trendingGifsLoading.set(false);
+      //console.log({ gifs });
+    });
+}
+
+
+scrollDivRef = viewChild<ElementRef<HTMLDivElement>>('scrollDiv');
+
+  onScroll(event: Event){
+    const scrollDiv = this.scrollDivRef()?.nativeElement;
+
+    if(!scrollDiv) return;
+
+    const scrollTop = scrollDiv.scrollTop; //px antes de llegar al final
+    const clientHeight = scrollDiv.clientHeight; //px visibles
+    const scrollHeight = scrollDiv.scrollHeight; //px totales
+
+    //console.log({scrollDiv});
+
+    const isFinalScrolled = scrollTop + clientHeight + 300 >= scrollHeight;
+    if(isFinalScrolled){
+      console.log('llegaste al final del scroll');
+      this.gifService.loadTrendingGifs();
+    } 
+  }
+```
 
 ### DevTools

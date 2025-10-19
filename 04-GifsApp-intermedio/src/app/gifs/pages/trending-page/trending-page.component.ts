@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, inject, viewChild } from '@angular/core';
 import { GifService } from '../../services/gifs.service';
 
 /*
@@ -26,4 +26,27 @@ export default class TrendingPageComponent {
   //gifs = signal(imageUrls);
 
   gifService = inject(GifService);
+
+  // viewChildren obtiene todos los elementos del DOM que coinciden con el selector
+  // viewChild obtiene el primer elemento del DOM que coincide con el selector
+  //scrollDivRef = viewChildren('groupDiv');
+  scrollDivRef = viewChild<ElementRef<HTMLDivElement>>('groupDiv');
+
+  onScroll(event: Event){
+    const scrollDiv = this.scrollDivRef()?.nativeElement;
+
+    if(!scrollDiv) return;
+
+    const scrollTop = scrollDiv.scrollTop; //px antes de llegar al final
+    const clientHeight = scrollDiv.clientHeight; //px visibles
+    const scrollHeight = scrollDiv.scrollHeight; //px totales
+
+    //console.log({scrollTop, clientHeight, scrollHeight});
+
+    const isFinalScrolled = scrollTop + clientHeight + 300 >= scrollHeight;
+    if(isFinalScrolled){
+      //console.log('llegaste al final del scroll');
+      this.gifService.loadTrendingGifs();
+    } 
+  }
 }

@@ -13,7 +13,7 @@ const GIF_KEY = 'gifs';
 const loadFromLocalStorage = () => {
   const gifsFromLocalStorage = localStorage.getItem(GIF_KEY) ?? '{}'; //Record<string, gifs[]>
   const gifs = JSON.parse(gifsFromLocalStorage);
-  console.log(gifs);
+  //console.log(gifs);
   return gifs;
 };
 
@@ -30,7 +30,8 @@ export class GifService {
   private http = inject(HttpClient);
 
   trendingGifs = signal<Gif[]>([]);
-  trendingGifsLoading = signal(true);
+  trendingGifsLoading = signal(false);
+  private currentPage = signal(0);
 
   // diseño masonry
   trendingGifGroup = computed<Gif[][]>(() => {
@@ -42,7 +43,7 @@ export class GifService {
       groups.push(gifs.slice(i, i + groupSize));
     }
 
-    console.log({ groups });
+    //console.log({ groups });
     return groups;
   });
 
@@ -61,18 +62,23 @@ export class GifService {
   });
 
   loadTrendingGifs() {
+    if(this.trendingGifsLoading()) return;
+    this.trendingGifsLoading.set(true);
+
     this.http
       .get<GiphyResponse>(`${environment.giphyUrl}/gifs/trending`, {
         params: {
           api_key: environment.giphyApiKey,
           limit: 20,
+          offset: this.currentPage() * 20,
         },
       })
       .subscribe((resp) => {
         const gifs = GifMapper.mapGiphyItemsToGifArray(resp.data);
-        this.trendingGifs.set(gifs);
+        this.trendingGifs.update(currentGifs =>[...currentGifs, ...gifs]);
+        this.currentPage.update(page => page + 1);
         this.trendingGifsLoading.set(false);
-        console.log({ gifs });
+        //console.log({ gifs });
       });
   }
 
