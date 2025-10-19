@@ -650,3 +650,5 @@ export default class TrendingPageComponent implements AfterViewInit {
 ```
 
 ### DevTools
+* Dentro de la terminal click en F5 y se abre en modo debbug
+* O escribir dentro del código ```debugger;```

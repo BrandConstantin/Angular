@@ -55,6 +55,7 @@ export default class TrendingPageComponent implements AfterViewInit {
     const isFinalScrolled = scrollTop + clientHeight + 300 >= scrollHeight;
     this.scrollStateService.trendingScrollPosition.set(scrollTop); // guardar la posicion del scroll, no recomendado hacerlo en cada pixel
 
+    //debugger;
     if(isFinalScrolled){
       //console.log('llegaste al final del scroll');
       this.gifService.loadTrendingGifs();
