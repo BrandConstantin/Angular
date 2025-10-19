@@ -533,3 +533,43 @@ export default class SearchPageComponent {
   };
 ```
 
+
+## Diseño Masonry
+* Ir a flowbite.com y buscar masonry 
+```
+  // diseño masonry
+  trendingGifGroup = computed<Gif[][]>(() => {
+    const groupSize = 3;
+    const groups: Gif[][] = [];
+    const gifs = this.trendingGifs();
+
+    for (let i = 0; i < gifs.length; i += groupSize) {
+      groups.push(gifs.slice(i, i + groupSize));
+    }
+
+    return groups;
+  });
+
+  .......
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-5">
+  @for (group of gifService.trendingGifGroup(); track $index) {
+    <div class="grid gap-4">
+      @for (gif of group; track gif.id) {
+        <div>
+          <img
+            class="w-full h-auto rounded-lg shadow-lg"
+            src="{{ gif.url }}"
+            alt="{{ gif.title }}"
+          />
+        </div>
+      }
+    </div>
+  }
+  </div>
+```
+
+### InfiniteScroll
+
+
+### DevTools
