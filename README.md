@@ -652,3 +652,41 @@ export default class TrendingPageComponent implements AfterViewInit {
 ### DevTools
 * Dentro de la terminal click en F5 y se abre en modo debbug
 * O escribir dentro del código ```debugger;```
+
+## Country App
+* Iniciar proyecto ```05-CountrySPA-estructura``` y N para SSR y SSG
+* usar los recursos:
+  - https://tailwindcss.com/docs/installation/framework-guides/angular
+  - https://daisyui.com/docs/install/
+* levantar aplicación ```ng serve -o```
+* seguir los pasos para tailwindcss: instalar, crear fichero .postcssrc.json, importar y recargar la aplicación
+* seguir los pasos para daisyui: instalar e importar
+* .postcssrc.json quedaría así: 
+```
+{
+  "plugins": {
+    "@tailwindcss/postcss": {},
+    "@daisyui": {}
+  }
+}
+```
+* Para la versión del curso solo ha funcionado haaciendo lo siguiente:
+```
+npm install daisyui@latest tailwindcss@latest @tailwindcss/postcss@latest postcss@latest --force
+ 
+Add Tailwind CSS plugin for PostCSS to a new .postcssrc.json file at root
+{
+  "plugins": {
+    "@tailwindcss/postcss": {}
+  }
+}
+ 
+src/styles.css
+@import "tailwindcss";
+@plugin "daisyui";
+ 
+para cambiar el tema e incluir o excluir agregar al archivo styles.css despues de @plugin "daisyui";
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark, cupcake;
+}
+```
