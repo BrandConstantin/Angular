@@ -658,6 +658,7 @@ export default class TrendingPageComponent implements AfterViewInit {
 * usar los recursos:
   - https://tailwindcss.com/docs/installation/framework-guides/angular
   - https://daisyui.com/docs/install/
+  - https://icon-sets.iconify.design/
 * levantar aplicación ```ng serve -o```
 * seguir los pasos para tailwindcss: instalar, crear fichero .postcssrc.json, importar y recargar la aplicación
 * seguir los pasos para daisyui: instalar e importar
@@ -690,3 +691,34 @@ para cambiar el tema e incluir o excluir agregar al archivo styles.css despues d
   themes: light --default, dark --prefersdark, cupcake;
 }
 ```
+
+### Tener varios routes
+```
+/* app.routes.ts */
+export const routes: Routes = [
+    {
+        path: '',
+        component: HomePage,
+    },
+    {
+        path: 'country',
+        loadChildren: () => import('./country/country.routes'),
+
+    },
+    {
+        path: '**',
+        redirectTo: '',
+    }
+];
+
+/* country.routes.ts */
+export const countryRoutes: Routes = [
+    {
+        path: '',
+        component: ByCapitalPage,
+    }
+];
+
+export default countryRoutes;
+```
+
