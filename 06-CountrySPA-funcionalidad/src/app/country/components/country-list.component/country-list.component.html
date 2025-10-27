@@ -4,47 +4,36 @@
     <!-- head -->
     <thead>
       <tr>
-        <th></th>
         <th>#</th>
-        <th>Icono</th>
+        <th>Indicativo</th>
         <th>Bandera</th>
         <th>Nombre</th>
         <th>Capital</th>
         <th>Población</th>
-        <th></th>
+        <th>Info</th>
       </tr>
     </thead>
     <tbody>
-      <!-- row 1 -->
+      @for (country of countries(); track country.cca2; let index = $index) {
       <tr>
-        <th>1</th>
-        <td>Cy Ganderton</td>
-        <td>Quality Control Specialist</td>
-        <td>Blue</td>
-        <td>Blue</td>
-        <td>Blue</td>
-        <td>Blue</td>
+        <td>{{ index + 1 }}</td>
+        <td>{{ country.cca2 }}</td>
+        <td><img [src]="country.flags" [alt]="country.name" class="w-10" /></td>
+        <td>{{ country.name }}</td>
+        <td>{{ country.capital }}</td>
+        <td>
+          <span class="badge badge-secondary">
+            {{ country.population | number }}
+          </span>
+        </td>
+        <td>
+          <a
+            class="btn btn-sm btn-secondary cursor-pointer"
+            >Ver más</a
+          >
+        </td>
       </tr>
-      <!-- row 2 -->
-      <tr>
-        <th>2</th>
-        <td>Hart Hagerty</td>
-        <td>Desktop Support Technician</td>
-        <td>Purple</td>
-        <td>Blue</td>
-        <td>Blue</td>
-        <td>Blue</td>
-      </tr>
-      <!-- row 3 -->
-      <tr>
-        <th>3</th>
-        <td>Brice Swyre</td>
-        <td>Tax Accountant</td>
-        <td>Red</td>
-        <td>Blue</td>
-        <td>Blue</td>
-        <td>Blue</td>
-      </tr>
+      }
     </tbody>
   </table>
 </div>
