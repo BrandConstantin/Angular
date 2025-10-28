@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { RESTCountry } from '../interfaces/rest-countries.interface';
-import { map, Observable } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import type { Country } from '../interfaces/country.interface';
 import { CountryMapper } from '../mappers/country.mapper';
 
@@ -17,8 +17,12 @@ export class CountryService {
   searchByCapital( query: string ):Observable<Country[]> {
     query = query.toLocaleUpperCase();
     //console.log('service - URL', `API_URL/capital/${ query }`);
-    return this.http
-      .get<RESTCountry[]>(`${API_URL}/capital/${ query }`)
-      .pipe(map(restCountries => CountryMapper.mapRestCountryArrayToCountryArray(restCountries)))
+
+    return this.http.get<RESTCountry[]>(`${API_URL}/capital/${ query }`).pipe(
+      map(restCountries => CountryMapper.mapRestCountryArrayToCountryArray(restCountries)),
+      catchError((error) => {
+        console.log('Error en el servicio', error);
+        return throwError(() => new Error('Error en el servicio', error));
+    }));
   }
 }
