@@ -23,11 +23,18 @@ export class ByCapitalPageComponent {
     this.isLoading.set(true);
     this.isError.set(null);
 
-    this.countryService.searchByCapital( query ).subscribe( resp => {
+    this.countryService.searchByCapital( query ).subscribe({
+      next: (resp) =>{
       this.isLoading.set(false);
       this.countries.set(resp);
 
       console.log(resp);
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+        this.isError.set(err.message);
+        this.countries.set([]);
+      }
     });
   }
 }

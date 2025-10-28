@@ -722,3 +722,94 @@ export const countryRoutes: Routes = [
 export default countryRoutes;
 ```
 
+## Service
+```
+  // Inyección del HttpClient  
+  private http = inject(HttpClient);
+
+  // Inyección del servicio  
+  countryService = inject(CountryService);
+
+  // Configuración del HttpClient en el app.config
+  provideHttpClient(withFetch())
+
+  // cramos la funcionalidad
+  searchByCapital( query: string ) {
+    query = query.toLocaleUpperCase();
+    return this.http.get<RESTCountry[]>(`${API_URL}/capital/${ query }`);
+  }
+
+  // crear la interfaz rest-countries.interface
+```
+
+### Mapeo de datos
+```
+    this.isLoading.set(true);
+    this.isError.set(null);
+
+    this.countryService.searchByCapital( query ).subscribe( resp => {
+      this.isLoading.set(false);
+      this.countries.set(resp);
+    });
+
+
+...............
+<country-list [countries]="countries()"></country-list>
+
+...............
+export class CountryMapper {
+  // static RestCountry => Country
+  static mapRestCountryToCountry(restCountry: RESTCountry): Country {
+    return {
+      capital: restCountry.capital.join(','),
+      cca2: restCountry.cca2,
+      flags: restCountry.flags.svg,
+      name: restCountry.translations['spa'].common ?? 'No Spanish Name',
+      population: restCountry.population,
+      region: restCountry.region,
+      subRegion: restCountry.subregion,
+    };
+  }
+
+  // static RestCountry[] => Country[]
+  static mapRestCountryArrayToCountryArray(restCountries: RESTCountry[]): Country[] {
+    return restCountries.map(this.mapRestCountryToCountry);
+  }
+}
+```
+
+###  Pipes
+```
+...
+  imports: [DecimalPipe],
+...
+
+  <span class="badge badge-secondary">
+    {{ country.population | number }}
+  </span>
+```
+
+## Manejo de excepciones
+```
+return this.http.get<RESTCountry[]>(`${API_URL}/capital/${ query }`).pipe(
+  map(restCountries => CountryMapper.mapRestCountryArrayToCountryArray(restCountries)),
+  catchError((error) => {
+    console.log('Error en el servicio', error);
+    return throwError(() => new Error('Error en el servicio', error));
+}));
+
+........
+this.countryService.searchByCapital( query ).subscribe({
+  next: (resp) =>{
+  this.isLoading.set(false);
+  this.countries.set(resp);
+
+  console.log(resp);
+  },
+  error: (err) => {
+    this.isLoading.set(false);
+    this.isError.set(err.message);
+    this.countries.set([]);
+  }
+});
+```
