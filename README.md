@@ -813,3 +813,33 @@ this.countryService.searchByCapital( query ).subscribe({
   }
 });
 ```
+
+## Reactividad con Resources
+```
+import { Component, inject, signal } from '@angular/core';
+import { toSignal, toObservable } from '@angular/core/rxjs-interop';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import { of } from 'rxjs';
+
+.....
+export class ByCapitalPageComponent {
+  countryService = inject(CountryService);
+  query = signal('');
+
+  countryResource = rxResource({
+    params: this.query,
+    stream: ({ params }) => {
+      if (!params) return of([])
+      return this.countryService.searchByCapital(params)
+    }
+  })
+}
+......  
+<country-list
+  [countries]="countryResource.value() ?? []"
+  [errorMessage]="countryResource.error()"
+  [isEmpty]="countryResource.value()?.length === 0"
+  [isLoading]="countryResource.isLoading()"
+/>
+```
+
