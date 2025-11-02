@@ -1,8 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { of } from 'rxjs';
+
 import { CountrySearchInputComponent } from '../../components/search-input.component/search-input.component';
 import { CountryListComponent } from '../../components/country-list.component/country-list.component';
 import { CountryService } from '../../services/country.service';
-import { Country } from '../../interfaces/country.interface';
 
 @Component({
   selector: 'app-by-capital-page',
@@ -10,9 +12,9 @@ import { Country } from '../../interfaces/country.interface';
   templateUrl: './by-capital-page.component.html',
 })
 export class ByCapitalPageComponent {
-  // Inyección del servicio  
   countryService = inject(CountryService);
 
+  /*
   isLoading = signal(false);
   isError = signal<string | null>(null);
   countries = signal<Country[]>([]);
@@ -37,4 +39,28 @@ export class ByCapitalPageComponent {
       }
     });
   }
+  
+
+  // en la version 20 y tiene problemas con resources, han cambiado "request" por "params"
+  countryResources = resource({
+    params: () => ({ query: this.query() }),
+    loader: async ({ params }) => {
+      if (!params.query) return []
+      return await firstValueFrom(
+        this.countryService.searchByCapital(params.query)
+      )
+    }
+  })
+  */
+
+  // Usando rxResource, ha cambiado de request por params y loader por stream a partir de Angular 20
+  query = signal('');
+
+  countryResource = rxResource({
+    params: this.query,
+    stream: ({ params }) => {
+      if (!params) return of([])
+      return this.countryService.searchByCapital(params)
+    },
+  });
 }
