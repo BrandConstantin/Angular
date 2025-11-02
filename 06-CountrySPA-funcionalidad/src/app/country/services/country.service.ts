@@ -47,4 +47,24 @@ export class CountryService {
     );
   }
 
+  searchCountryByAlpha( code: string ):Observable<Country | null> {
+    //code = code.toLocaleUpperCase();
+    
+    return this.http.get<RESTCountry[]>(`${API_URL}/alpha/${code}`).pipe(
+      map((resp) => CountryMapper.mapRestCountryArrayToCountryArray(resp)),
+      map((countries) => countries.at(0) ?? null),
+
+
+      //map((resp) => CountryMapper.mapRestCountryArrayToCountryArray(resp)),
+      //map((countries) => countries.at(0)),
+      catchError((error) => {
+        console.log('Error fetching ', error);
+
+        return throwError(
+          () => new Error(`No se pudo obtener países con ese código ${code}`)
+        );
+      })
+    );
+  }
+
 }
