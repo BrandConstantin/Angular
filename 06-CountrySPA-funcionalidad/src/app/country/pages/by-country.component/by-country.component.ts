@@ -15,10 +15,11 @@ export class ByCountryComponent {
   query = signal('');
 
   countryResource = rxResource({
-    params: this.query,
+    params: () => ({ query: this.query() }),
     stream: ({ params }) => {
-      if (!params) return of([]);
-      return this.countryService.searchByCountry(params);
+      if (!params.query) return of([]);
+
+      return this.countryService.searchByCountry(params.query);
     },
   });
 }
