@@ -657,25 +657,16 @@ export default class TrendingPageComponent implements AfterViewInit {
 * Iniciar proyecto ```05-CountrySPA-estructura``` y N para SSR y SSG
 * usar los recursos:
   - https://tailwindcss.com/docs/installation/framework-guides/angular
+    - Para la versión del curso solo ha funcionado haaciendo lo siguiente: ```npm install daisyui@latest tailwindcss@latest @tailwindcss/postcss@latest postcss@latest --force```
   - https://daisyui.com/docs/install/
+    - ```npm i -D daisyui@latest```
   - https://icon-sets.iconify.design/
 * levantar aplicación ```ng serve -o```
 * seguir los pasos para tailwindcss: instalar, crear fichero .postcssrc.json, importar y recargar la aplicación
 * seguir los pasos para daisyui: instalar e importar
-* .postcssrc.json quedaría así: 
+* Add Tailwind CSS plugin for PostCSS to a new .postcssrc.json file at root
+
 ```
-{
-  "plugins": {
-    "@tailwindcss/postcss": {},
-    "@daisyui": {}
-  }
-}
-```
-* Para la versión del curso solo ha funcionado haaciendo lo siguiente:
-```
-npm install daisyui@latest tailwindcss@latest @tailwindcss/postcss@latest postcss@latest --force
- 
-Add Tailwind CSS plugin for PostCSS to a new .postcssrc.json file at root
 {
   "plugins": {
     "@tailwindcss/postcss": {}
@@ -843,3 +834,117 @@ export class ByCapitalPageComponent {
 />
 ```
 
+## Debounce - búsquedas autómaticas
+```
+<input
+    type="text"
+    class="input input-bordered w-full max-w-xs"
+    [placeholder]="placeholder()"
+    autofocus
+    #txtSearchCapital
+    (keyup.enter)="value.emit( txtSearchCapital.value )"
+    (keyup)="inputValue.set( txtSearchCapital.value )"
+/> 
+
+.....
+placeholder = input("Buscar país ..."); // establece un valor por defecto
+value = output<string>();
+debounceTime = input(300); // tiempo de espera por defecto, reutilizable en otros componentes
+
+inputValue = signal<string>(''); // tener la última cadena ingresada
+debouncedEffct = effect((onCleanup) => {
+  const val = this.inputValue();
+
+  const timeout = setTimeout(() => {
+    this.value.emit(val);
+  }, this.debounceTime());
+
+  onCleanup(() => {
+    clearTimeout(timeout);
+  });
+});
+```
+
+## Cache
+```
+// cache de países buscados
+private queryCacheCapital = new Map<string, Country[]>();
+
+if( this.queryCacheCapital.has( query ) ) {
+  return of( this.queryCacheCapital.get( query )! );
+}
+
+.....
+tap( countries => this.queryCacheCapital.set( query, countries ) ),
+```
+
+## ActivatedRoute
+Para preservar los resultados
+```
+// tomar la información de la ruta activa
+activatedRoute = inject(ActivatedRoute);
+queryParam = this.activatedRoute.snapshot.queryParamMap.get('query') ?? '';
+query = linkedSignal(() => this.queryParam);
+
+countryResource = rxResource({
+  params: this.query,
+  stream: ({ params }) => {
+    if (!params) return of([])
+
+    this.router.navigate(['/country/by-capital'], {
+      queryParams: { 
+        query: params,
+        saludo: 'hola' 
+      },
+    });
+
+    return this.countryService.searchByCapital(params)
+  },
+});
+
+.....
+initialValue = input<string>();
+// inicializar una señal con un proceso de entrada
+inputValue = linkedSignal<string>(() => this.initialValue() ?? ''); // tener la última cadena ingresada
+
+.....
+<input
+    type="text"
+    class="input input-bordered w-full max-w-xs"
+    [placeholder]="placeholder()"
+    autofocus
+    #txtSearchCapital
+    (keyup.enter)="value.emit( txtSearchCapital.value )"
+    (keyup)="inputValue.set( txtSearchCapital.value )"
+    [value]="inputValue()"
+/> 
+```
+
+## Pipes
+### DatePipe
+
+### UpperCasePipe
+
+### LowerCasePipe
+
+### TitleCasePipe
+
+### CurrencyPipe
+
+### DecimalPipe
+
+### PercentPipe
+
+### i18nPluralPipe
+
+### i18nSelectPipe
+
+### JsonPipe
+
+### KeyValuePipe
+
+### SlicePipe
+
+### AsyncPipe
+
+### Configuraciones de internacionalización de Pipes y Aplicación
