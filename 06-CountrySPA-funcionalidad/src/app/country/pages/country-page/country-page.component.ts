@@ -20,7 +20,7 @@ export class CountryPageComponent {
   countryResource = rxResource({
     params: () => this.countryCode,
     stream: ({ params }) => { 
-      console.log('Params received in resource stream:', params);
+      console.log('Parametro recibido: ', params);
       // Aquí se podría llamar a un servicio para obtener los datos del país por su código
       return this.countryService.searchCountryByAlpha(params)
     },
