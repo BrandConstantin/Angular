@@ -1,4 +1,4 @@
-import { Component, effect, input, output, signal } from '@angular/core';
+import { Component, effect, input, linkedSignal, output, signal } from '@angular/core';
 
 @Component({
   selector: 'country-search-input',
@@ -10,7 +10,10 @@ export class CountrySearchInputComponent {
   value = output<string>();
   debounceTime = input(300); // tiempo de espera por defecto, reutilizable en otros componentes
 
-  inputValue = signal<string>(''); // tener la última cadena ingresada
+  initialValue = input<string>();
+  // inicializar una señal con un proceso de entrada
+  inputValue = linkedSignal<string>(() => this.initialValue() ?? ''); // tener la última cadena ingresada
+  
   debouncedEffct = effect((onCleanup) => {
     const val = this.inputValue();
 
