@@ -1,10 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, linkedSignal, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { of } from 'rxjs';
 
 import { CountrySearchInputComponent } from '../../components/search-input.component/search-input.component';
 import { CountryListComponent } from '../../components/country-list.component/country-list.component';
 import { CountryService } from '../../services/country.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-by-capital-page',
@@ -13,6 +14,12 @@ import { CountryService } from '../../services/country.service';
 })
 export class ByCapitalPageComponent {
   countryService = inject(CountryService);
+
+  // tomar la información de la ruta activa
+  activatedRoute = inject(ActivatedRoute);
+  router = inject(Router);
+  queryParam = this.activatedRoute.snapshot.queryParamMap.get('query') ?? '';
+  query = linkedSignal(() => this.queryParam);
 
   /*
   isLoading = signal(false);
@@ -54,12 +61,18 @@ export class ByCapitalPageComponent {
   */
 
   // Usando rxResource, ha cambiado de request por params y loader por stream a partir de Angular 20
-  query = signal('');
-
   countryResource = rxResource({
     params: this.query,
     stream: ({ params }) => {
       if (!params) return of([])
+
+      this.router.navigate(['/country/by-capital'], {
+        queryParams: { 
+          query: params,
+          saludo: 'hola' 
+        },
+      });
+
       return this.countryService.searchByCapital(params)
     },
   });
