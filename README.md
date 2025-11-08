@@ -672,12 +672,11 @@ export default class TrendingPageComponent implements AfterViewInit {
     "@tailwindcss/postcss": {}
   }
 }
- 
-src/styles.css
+```
+Añadir a src/styles.css y cambiar tema
+```
 @import "tailwindcss";
-@plugin "daisyui";
- 
-para cambiar el tema e incluir o excluir agregar al archivo styles.css despues de @plugin "daisyui";
+/* @plugin "daisyui"; */
 @plugin "daisyui" {
   themes: light --default, dark --prefersdark, cupcake;
 }
@@ -921,29 +920,164 @@ inputValue = linkedSignal<string>(() => this.initialValue() ?? ''); // tener la 
 ```
 
 ## Pipes
+### UpperCasePipe, LowerCasePipe, TitleCasePipe
+```
+import { LowerCasePipe, TitleCasePipe, UpperCasePipe } from '@angular/common';
+
+nameLower = signal('constantin');
+nameUpper = signal('CONSTANTIN');
+fullName = signal('bRANd CONstanTIN');
+.....
+
+<div class="stat-value">{{ nameUpper() | lowercase }}</div>
+<div class="stat-value">{{ nameLower() | uppercase }}</div>
+<div class="stat-value">{{ fullName() | titlecase }}</div>
+```
+
+### CurrencyPipe, DecimalPipe, PercentPipe
+```
+import { CurrencyPipe, DecimalPipe, PercentPipe } from '@angular/common';
+
+totalSells = signal(2_567_789.5567);
+percent = signal(0.4856);
+.....
+<div class="stat-value">{{ totalSells() | number : "1.2-2" }}</div>
+<div class="stat-value">{{ totalSells() + 1234 | number : "1.0-0" }}</div>
+<div class="stat-value"> {{ totalSells() | currency : "EUR" : "symbol-narrow" : "1.4-4" }}</div>
+<div class="stat-value">{{ percent() | percent : "1.2-2" }}</div>
+```
+
 ### DatePipe
+```
+import { DatePipe } from '@angular/common';
 
-### UpperCasePipe
+customDate = signal(new Date());
 
-### LowerCasePipe
+tickingDateEffect = effect((onCleanup) => {
+  const interval = setInterval(() => {
+    this.customDate.set(new Date());
+  }, 1_000);
 
-### TitleCasePipe
+  onCleanup(() => {
+    clearInterval(interval);
+  });
+});
+.....
 
-### CurrencyPipe
+<div class="stat-value">{{ customDate() | date }}</div>
+<div class="stat-value">{{ customDate() | date : "long" : "GMT-6" }}</div>
+<div class="stat-value">{{ customDate() | date : "EEEE d, MMMM" }}</div>
+```
 
-### DecimalPipe
+### Cambiar idioma aplicación en la configuarción aplicación
+```
+import localEs from '@angular/common/locales/es';
+import localRo from '@angular/common/locales/ro';
+import { LocalService } from './service/local.service';
 
-### PercentPipe
+registerLocaleData(localRo, 'ro');
+registerLocaleData(localEs, 'es');
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes),
+
+    {
+      provide: LOCALE_ID,
+      //useValue: 'es-ES',
+      deps: [LocalService],
+      useFactory: (localService: LocalService) => localService.getLocale,
+    }
+  ]
+};
+
+.....
+
+export type AvailableLocale = 'es' | 'ro' | 'en';
+
+@Injectable({  providedIn: 'root'})
+export class LocalService {
+  private currentLocal = signal<AvailableLocale>('es');
+
+  constructor() {
+    this.currentLocal.set(localStorage.getItem('locale') as AvailableLocale || 'es');
+  }
+
+  get getLocale() {
+    return this.currentLocal();
+  }
+
+  changeLocale(locale: AvailableLocale) {
+    localStorage.setItem('locale', locale);
+    this.currentLocal.set(locale);
+    window.location.reload();
+  }
+}
+
+.....
+currentLocal = signal(inject(LOCALE_ID));
+
+changeLocale(locale: AvailableLocale) {
+  this.localService.changeLocale(locale);
+}
+
+.....
+
+<div class="flex flex-roww gap-2">
+  <h1 class="text-2xl font-bold">
+    Locale Actual:
+    <span class="badge badge-secondary">{{ currentLocal() }}</span>
+  </h1>
+
+  <button (click)="changeLocale('ro')" class="btn btn-primary">
+    Schimbă în română
+  </button>
+  <button (click)="changeLocale('en')" class="btn btn-primary">
+    Change to English
+  </button>
+  <button (click)="changeLocale('es')" class="btn btn-primary">
+    Cambiar a español
+  </button>
+</div>
+```
 
 ### i18nPluralPipe
+```
+<p>
+  Actualmente
+  {{ clients().length | i18nPlural : clientsMap() }}
+</p>
+
+.....
+clientsMap = signal({
+  '=0': 'no tenemos ningún cliente esperando',
+  '=1': 'tenemos un cliente esperano',
+  '=2': 'tenemos 2 clientes esperando',
+  other: 'tenemos # clientes esperando'
+})
+```
 
 ### i18nSelectPipe
+```
+<p>
+  Saludos {{ client().name }}, es un placer
+  {{ client().gender | i18nSelect : invitationMap }} a nuestro evento
+</p>
+
+.....
+invitationMap ={
+  male: 'invitado',
+  famale: 'invitada'
+}
+```
+
+### SlicePipe
 
 ### JsonPipe
 
 ### KeyValuePipe
-
-### SlicePipe
 
 ### AsyncPipe
 
