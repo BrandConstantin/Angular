@@ -1118,3 +1118,12 @@ promiseValue: Promise<string> = new Promise((resolve, reject) => {
 }
 ```
 
+## Pipes personalizados
+
+### Transformar strings
+
+### Pipes dentro de propiedades computadas
+
+### Filtrar arreglos
+
+### Ordenar arreglos
