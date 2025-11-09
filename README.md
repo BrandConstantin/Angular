@@ -969,7 +969,8 @@ tickingDateEffect = effect((onCleanup) => {
 <div class="stat-value">{{ customDate() | date : "EEEE d, MMMM" }}</div>
 ```
 
-### Cambiar idioma aplicación en la configuarción aplicación
+### Configuraciones de internacionalización de Pipes y Aplicación
+##### Cambiar idioma aplicación en la configuarción aplicación
 ```
 import localEs from '@angular/common/locales/es';
 import localRo from '@angular/common/locales/ro';
@@ -1073,12 +1074,47 @@ invitationMap ={
 }
 ```
 
-### SlicePipe
+### SlicePipe, JsonPipe, KeyValuePipe
+```
+<ul>
+  @for (item of profile | keyvalue; track $index) {
+  <li>
+    <strong class="text-primary">{{ item.key | titlecase }}:</strong>
+    <span>
+      {{ item.value }}
+    </span>
+  </li>
 
-### JsonPipe
+  }
+</ul>
 
-### KeyValuePipe
+.....
+...
+  imports: [Card, I18nSelectPipe, I18nPluralPipe, SlicePipe, UpperCasePipe, JsonPipe, KeyValuePipe, TitleCasePipe],
+...
+
+profile = {
+  name: 'Jesús',
+  gender: 'none',
+  age: 56,
+  address: 'Ottawa, Canada'
+}
+```
 
 ### AsyncPipe
+```
+promiseValue: Promise<string> = new Promise((resolve, reject) => {
+  setTimeout(() =>{
+    resolve('Tenemos data en la promesa')
+    console.log('Promesa finalizada');
+  }, 2500);
+})
 
-### Configuraciones de internacionalización de Pipes y Aplicación
+.....
+<p>{{ promiseValue | async }}</p>
+
+@if( promiseValue | async; as value ) {
+  <p class="text-primary">{{ value }}</p>
+}
+```
+
