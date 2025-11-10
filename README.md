@@ -1118,12 +1118,136 @@ promiseValue: Promise<string> = new Promise((resolve, reject) => {
 }
 ```
 
-## Pipes personalizados
+## Pipes personalizados y transformar strings
+```
+<span
+  class="text-xs w-44"
+  [class.text-success]="hero.canFly"
+  [class.text-secondary]="!hero.canFly"
+>
+  {{ hero.canFly | canFly | uppercase}}
+  <!-- Puede volar | No puede volar -->
+</span>
 
-### Transformar strings
+.....
+import { Pipe } from '@angular/core';
+
+@Pipe({
+  name: 'canFly',
+})
+export class CanFlyPipe {
+  transform(fly: boolean): string {
+    return fly ? 'puede volar' : 'no puede volar';
+  }
+}
+
+.....
+imports: [ToggleCasePipe, CanFlyPipe, HeroColorPipe, TitleCasePipe, HeroTextColorPipe, UpperCasePipe],
+```
 
 ### Pipes dentro de propiedades computadas
+```
+<span class="text-xs w-44" [style.color]="hero.color | heroTextColor">
+  {{ hero.color | heroColor | titlecase}}
+</span>
 
-### Filtrar arreglos
+......
+import { Pipe, PipeTransform } from '@angular/core';
+import { Color, ColorMap } from '../interfaces/hero.interface';
+
+@Pipe({
+  name: 'heroTextColor',
+})
+export class HeroTextColorPipe implements PipeTransform{
+
+  transform(textColor: Color): string {
+    return ColorMap[textColor];
+  }
+
+}
+
+.....
+export enum Color {
+  red,
+  black,
+  blue,
+  green,
+}
+
+export enum Creator {
+  DC,
+  Marvel,
+}
+
+export interface Hero {
+  id: number;
+  name: string;
+  canFly: boolean;
+  color: Color;
+  creator: Creator;
+}
+
+export const ColorMap = {
+  [Color.red]: '#E57373',
+  [Color.black]: '#424242',
+  [Color.blue]: '#64B5F6',
+  [Color.green]: '#81C784',
+};
+```
 
 ### Ordenar arreglos
+```
+@for (hero of heroes() | heroSortBy: sortBy(); track hero.id; let i = $index) {}
+
+.....
+sortBy = signal<keyof Hero | null>(null);
+
+.....
+@Pipe({
+  name: 'heroSortBy',
+})
+export class HeroSortByPipe implements PipeTransform{
+    transform(value: Hero[], sortBy: keyof Hero | null): Hero[] {
+        if(!sortBy) return value;
+
+        switch(sortBy){
+            case 'name': return value.sort((a,b) => a.name.localeCompare(b.name));
+            case 'canFly': return value.sort((a,b) => (a.canFly ? 1 : -1) - (b.canFly ? 1 : -1));
+            case 'color': return value.sort((a,b) => a.color - b.color);
+            case 'creator': return value.sort((a,b) => a.creator - b.creator);
+            default: return value;
+        }
+    }
+}
+```
+
+### Filtrar arreglos
+```
+<input
+    type="text"
+    class="input input-bordered w-full max-w-xs"
+    placeholder="Buscar héroe"
+    (input)="searchQuery.set(txtSearch.value)"
+    #txtSearch
+/>
+
+.....
+  searchQuery = signal('');
+
+.....
+@Pipe({
+  name: 'heroFilter',
+})
+export class HeroFilterPipe implements PipeTransform{
+    transform(value: Hero[], search: string): Hero[] {
+        if(!search) return value;
+
+        search = search.toLowerCase();
+
+        return value.filter(
+            hero => hero.name.toLowerCase().includes(search)
+        );
+    }
+}
+```
+
