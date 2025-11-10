@@ -9,5 +9,5 @@ import { Navbar } from './components/navbar/navbar';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('08-Pipes');
+  protected readonly title = signal('09-Pipes-personalizados');
 }
