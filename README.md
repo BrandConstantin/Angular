@@ -1251,6 +1251,14 @@ export class HeroFilterPipe implements PipeTransform{
 }
 ```
 
+# Angular Schematics
+Para desativar, cuando se crea componentes, la opción de "changeDetection: ChangeDetectionStrategy.OnPush," y "standalone: true,":
+* View -> Command Pallete
+* Angular Schematics: Configuration Helper
+* Marcamos Configuration -> Configuration Helper
+* Copy Settings from Angular json -> Yes, use HTML external file -> Yes, disbled for components and pages
+
+
 # Formulario Reactivos
 ## Reactive Forms Module en Standalone components
 
