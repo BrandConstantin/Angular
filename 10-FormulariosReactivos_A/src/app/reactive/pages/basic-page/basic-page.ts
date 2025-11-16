@@ -1,6 +1,7 @@
 import { JsonPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormUtils } from '../../../utils/form-utils';
 
 @Component({
   selector: 'app-basic-page',
@@ -18,6 +19,8 @@ export class BasicPage {
   })
   */
 
+  formUtils = FormUtils;
+
   // con formBuilder
   private fb = inject(FormBuilder);
   myForm: FormGroup = this.fb.group({
@@ -27,9 +30,13 @@ export class BasicPage {
     inStorage: [0, [Validators.required, Validators.min(0)]]
   })
 
+
+  // se comenta para usar el form-utils
+  /*
   isValidField(fieldName: string): boolean | null{
     return (this.myForm.controls[fieldName].errors && this.myForm.controls[fieldName].touched);
   }
+
 
   getFieldError(fieldName: string): string | null {
     if(!this.myForm.controls[fieldName]) return null;
@@ -51,7 +58,8 @@ export class BasicPage {
 
     return null;
   }
-
+  */
+ 
   onSave(){
     if(this.myForm.invalid){
       this.myForm.markAllAsTouched();
