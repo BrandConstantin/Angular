@@ -1362,14 +1362,85 @@ onSave(){
 }
 ```
 
-## Controles dinámicos
+## Controles dinámicos con arreglos
+```
+<div class="col-sm-9" formArrayName="favoriteGames">
+    @for (favoriteGame of favoriteGames.controls; track $index; let i = $index){
+        <div class="mb-1">
 
-## Formularios reactivos
+            <div class="input-group">
+                <input class="form-control"
+                [formControlName]="i">
 
-## Campos reactivos fuera de formularios
+                <button class="btn btn-outline-danger"
+                        type="button">
+                Eliminar
+            </button>
+            </div>
+            @if (formUtils.isValidFieldInArray(favoriteGames, i)){
+                <span class="form-text text-danger">
+                    {{formUtils.getFieldErrorInArray(favoriteGames, i)}}
+                </span>
+            }
 
-## NgSubmit
+        </div>
+    }
+</div>
+.....
 
-## Clases utilitarias
+private fb = inject(FormBuilder);
 
-## Validaciones básicas pre-fabricadas
+myForm: FormGroup = this.fb.group({
+  name: ['', [Validators.required, Validators.minLength(3)]],
+  favoriteGames: this.fb.array(
+    [
+      ['Metal Gear', Validators.required],
+      ['Death Stranding', Validators.required]
+    ],
+    Validators.minLength(3)
+  ),
+})
+
+get favoriteGames(){
+  return this.myForm.get('favoriteGames') as FormArray;
+}
+
+isValidFieldInArray(formArray: FormArray, index: number){
+  return (formArray.controls[index].errors && formArray.controls[index].touched)
+}
+```
+
+## Añadir y eliminar controles de formulario
+```
+<div class="input-group">
+    <input class="form-control"
+            placeholder="Agregar favorito"
+            [formControl]="newFavorite"
+            (keydown.enter)="onAddToFavorites()"
+            (keydown.enter)="$event.preventDefault()">
+
+
+    <button class="btn btn-outline-primary"
+            type="button"
+            (click)="onAddToFavorites()">
+        Agregar favorito
+    </button>
+</div>
+.....
+
+newFavorite = new FormControl('', Validators.required);
+
+onAddToFavorites(){
+  if(this.newFavorite.invalid) return;
+
+  const newGame = this.newFavorite.value;
+
+  this.favoriteGames.push(this.fb.control(newGame, Validators.required));
+
+  this.newFavorite.reset();
+}
+
+onDeleteFavorite(index: number) {
+  this.favoriteGames.removeAt(index);
+}
+```

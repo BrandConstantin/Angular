@@ -1,17 +1,20 @@
 <h2>Reactivos: <small> Dinámicos </small></h2>
 <hr>
 
-<form autocomplete="off">
+<form autocomplete="off" [formGroup]="myForm" (ngSubmit)="onSubmit()">
 
     <!-- Nombre -->
     <div class="mb-3 row">
         <label class="col-sm-3 col-form-label">Nombre</label>
         <div class="col-sm-9">
             <input class="form-control"
-                   placeholder="Nombre de la persona">
-            <span class="form-text text-danger">
-                   error message
-            </span>
+                   placeholder="Nombre de la persona"
+                   formControlName="name">
+            @if (formUtils.isValidField(myForm, 'name')){
+                <span class="form-text text-danger">
+                    {{formUtils.getFieldError(myForm, "name")}}
+                </span>
+            }
         </div>
     </div>
 
@@ -22,11 +25,15 @@
 
             <div class="input-group">
                 <input class="form-control"
-                       placeholder="Agregar favorito">
+                       placeholder="Agregar favorito"
+                       [formControl]="newFavorite"
+                       (keydown.enter)="onAddToFavorites()"
+                       (keydown.enter)="$event.preventDefault()">
 
 
                 <button class="btn btn-outline-primary"
-                        type="button">
+                        type="button"
+                        (click)="onAddToFavorites()">
                     Agregar favorito
                 </button>
             </div>
@@ -37,25 +44,37 @@
     <!-- Lista de Juegos Favoritos -->
     <div class="mb-3 row">
         <label class="col-sm-3 col-form-label">Favoritos</label>
-        <div class="col-sm-9">
 
-            <div class="mb-1">
+        <div class="col-sm-9" formArrayName="favoriteGames">
+            @for (favoriteGame of favoriteGames.controls; track $index; let i = $index){
+                <div class="mb-1">
 
-                <div class="input-group">
-                    <input class="form-control">
+                    <div class="input-group">
+                        <input class="form-control"
+                        [formControlName]="i">
 
-                    <button class="btn btn-outline-danger"
-                            type="button">
-                      Eliminar
-                  </button>
+                        <button class="btn btn-outline-danger"
+                                type="button"
+                                (click)="onDeleteFavorite(i)">
+                        Eliminar
+                    </button>
+                    </div>
+                    @if (formUtils.isValidFieldInArray(favoriteGames, i)){
+                        <span class="form-text text-danger">
+                            {{formUtils.getFieldErrorInArray(favoriteGames, i)}}
+                        </span>
+                    }
+
                 </div>
+            }
+
+            @if (formUtils.isValidField(myForm, 'favoriteGames')){
                 <span class="form-text text-danger">
-                   Este campo es requerido
+                    Debe haber al menos 3 juegos
                 </span>
-
-            </div>
-
+            }
         </div>
+
     </div>
 
 
@@ -63,9 +82,8 @@
     <div class="row">
         <div class="col-sm-12">
             <button type="submit"
-                    class="btn btn-primary float-end"
-                    >
-                    <!-- [disabled]="myForm.invalid" -->
+                    class="btn btn-primary float-end"                    
+                    [disabled]="myForm.invalid">
                 Guardar
             </button>
         </div>
@@ -77,13 +95,13 @@
 
 
 <span>Valid</span>
-<pre>{{ 'object' | json }}</pre>
+<pre>{{ myForm.valid | json }}</pre>
 <br>
 
 <span>Value</span>
-<pre>{{ 'object' | json }}</pre>
+<pre>{{ myForm.value | json }}</pre>
 <br>
 
 <span>Agregar Juego</span>
-<pre>{{ 'object' | json }}</pre>
-<pre>{{ 'object' | json }}</pre>
+<pre>{{ myForm.controls['favoriteGames'].errors | json }}</pre>
+<pre>{{ myForm.controls['favoriteGames'].value | json }}</pre>
