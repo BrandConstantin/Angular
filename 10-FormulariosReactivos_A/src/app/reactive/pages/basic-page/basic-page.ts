@@ -28,7 +28,7 @@ export class BasicPage {
   })
 
   isValidField(fieldName: string): boolean | null{
-    return !!this.myForm.controls[fieldName].errors;
+    return (this.myForm.controls[fieldName].errors && this.myForm.controls[fieldName].touched);
   }
 
   getFieldError(fieldName: string): string | null {
@@ -50,5 +50,17 @@ export class BasicPage {
     }
 
     return null;
+  }
+
+  onSave(){
+    if(this.myForm.invalid){
+      this.myForm.markAllAsTouched();
+      return;
+    }
+
+    this.myForm.reset({ // resetear el form una vez enviado
+      price: 0, // establecer un valor
+      inStorage: -1
+    });
   }
 }

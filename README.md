@@ -1340,7 +1340,27 @@ getFieldError(fieldName: string): string | null {
 }
 ```
 
-## FormArrays
+## Guardar formulario
+```
+<form autocomplete="off" [formGroup]="myForm" (ngSubmit)="onSave()">...</form>
+
+.....
+isValidField(fieldName: string): boolean | null{
+  return (this.myForm.controls[fieldName].errors && this.myForm.controls[fieldName].touched);
+}
+
+onSave(){
+  if(this.myForm.invalid){
+    this.myForm.markAllAsTouched();
+    return;
+  }
+
+  this.myForm.reset({ // resetear el form una vez enviado
+    price: 0, // establecer un valor
+    inStorage: -1
+  });
+}
+```
 
 ## Controles dinámicos
 
