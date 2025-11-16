@@ -1362,7 +1362,53 @@ onSave(){
 }
 ```
 
-## Controles dinámicos
+## Controles dinámicos con arreglos
+```
+<div class="col-sm-9" formArrayName="favoriteGames">
+    @for (favoriteGame of favoriteGames.controls; track $index; let i = $index){
+        <div class="mb-1">
+
+            <div class="input-group">
+                <input class="form-control"
+                [formControlName]="i">
+
+                <button class="btn btn-outline-danger"
+                        type="button">
+                Eliminar
+            </button>
+            </div>
+            @if (isValidFieldInArray(favoriteGames, i)){
+                <span class="form-text text-danger">
+                    Este campo es requerido
+                </span>
+            }
+
+        </div>
+    }
+</div>
+.....
+
+private fb = inject(FormBuilder);
+
+myForm: FormGroup = this.fb.group({
+  name: ['', [Validators.required, Validators.minLength(3)]],
+  favoriteGames: this.fb.array(
+    [
+      ['Metal Gear', Validators.required],
+      ['Death Stranding', Validators.required]
+    ],
+    Validators.minLength(3)
+  ),
+})
+
+get favoriteGames(){
+  return this.myForm.get('favoriteGames') as FormArray;
+}
+
+isValidFieldInArray(formArray: FormArray, index: number){
+  return (formArray.controls[index].errors && formArray.controls[index].touched)
+}
+```
 
 ## Formularios reactivos
 
