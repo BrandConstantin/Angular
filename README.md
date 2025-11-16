@@ -1261,6 +1261,28 @@ Para desativar, cuando se crea componentes, la opción de "changeDetection: Chan
 
 # Formulario Reactivos
 ## Reactive Forms Module en Standalone components
+```
+imports: [JsonPipe, ReactiveFormsModule],
+
+.....
+myForm = new FormGroup({
+  name: new FormControl(''),
+  price: new FormControl(0),
+  inStorage: new FormControl(0)
+})
+
+.....
+<input type="text"
+        class="form-control"
+        placeholder="Nombre del producto"
+        formControlName="name">
+
+<span>Valid</span>
+<pre>{{ 'myForm.valid' | json }}</pre>
+
+<span>Pristine</span>
+<pre>{{ 'myForm.pristine' | json }}</pre>
+```
 
 ## Form Builder
 
