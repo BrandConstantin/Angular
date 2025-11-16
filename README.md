@@ -1377,9 +1377,9 @@ onSave(){
                 Eliminar
             </button>
             </div>
-            @if (isValidFieldInArray(favoriteGames, i)){
+            @if (formUtils.isValidFieldInArray(favoriteGames, i)){
                 <span class="form-text text-danger">
-                    Este campo es requerido
+                    {{formUtils.getFieldErrorInArray(favoriteGames, i)}}
                 </span>
             }
 

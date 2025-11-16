@@ -27,7 +27,4 @@ export class DynamicPage {
     return this.myForm.get('favoriteGames') as FormArray;
   }
 
-  isValidFieldInArray(formArray: FormArray, index: number){
-    return (formArray.controls[index].errors && formArray.controls[index].touched)
-  }
 }
