@@ -1410,12 +1410,37 @@ isValidFieldInArray(formArray: FormArray, index: number){
 }
 ```
 
-## Formularios reactivos
+## Añadir y eliminar controles de formulario
+```
+<div class="input-group">
+    <input class="form-control"
+            placeholder="Agregar favorito"
+            [formControl]="newFavorite"
+            (keydown.enter)="onAddToFavorites()"
+            (keydown.enter)="$event.preventDefault()">
 
-## Campos reactivos fuera de formularios
 
-## NgSubmit
+    <button class="btn btn-outline-primary"
+            type="button"
+            (click)="onAddToFavorites()">
+        Agregar favorito
+    </button>
+</div>
+.....
 
-## Clases utilitarias
+newFavorite = new FormControl('', Validators.required);
 
-## Validaciones básicas pre-fabricadas
+onAddToFavorites(){
+  if(this.newFavorite.invalid) return;
+
+  const newGame = this.newFavorite.value;
+
+  this.favoriteGames.push(this.fb.control(newGame, Validators.required));
+
+  this.newFavorite.reset();
+}
+
+onDeleteFavorite(index: number) {
+  this.favoriteGames.removeAt(index);
+}
+```
