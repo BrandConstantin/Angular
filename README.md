@@ -1444,3 +1444,41 @@ onDeleteFavorite(index: number) {
   this.favoriteGames.removeAt(index);
 }
 ```
+
+## Switches, checks y radio buttos
+```
+export class SwitchesPage { 
+  private fb = inject(FormBuilder);
+  formUtils = FormUtils;
+
+  myForm: FormGroup = this.fb.group({
+    gender: [ , Validators.required],
+    wantNotifications: [true],
+    termAndCondition: [false, Validators.requiredTrue]
+  })
+
+  onSubmit(){
+    this.myForm.markAllAsTouched();
+  }
+}
+
+.....
+<div 
+    [class.text-danger]="formUtils.isValidField(myForm, 'termAndCondition')"
+    class="form-check">
+        <input class="form-check-input"
+                type="checkbox"
+                id="flexCheckDefault"
+                formControlName="termAndCondition">
+        <label class="form-check-label" for="flexCheckDefault">
+          Términos y condiciones de uso
+        </label>
+      </div>
+        @if (formUtils.isValidField(myForm, 'termAndCondition')){
+            <span class="form-text text-danger">
+                Debe de aceptar las condiciones de uso
+            </span>
+        }
+
+</div>
+```
