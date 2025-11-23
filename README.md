@@ -1483,7 +1483,7 @@ export class SwitchesPage {
 </div>
 ```
 
-## Validaciones exresiones regulares
+## Validaciones expresiones regulares
 ```
 static namePattern = '([a-zA-Z]+) ([a-zA-Z]+)';
 static emailPattern = '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$';
@@ -1502,3 +1502,33 @@ myRegisterForm: FormGroup = this.fb.group({
 
 
 ```
+
+## Validaciones asíncronas
+```
+static async checkingServerResponse(control: AbstractControl): Promise<ValidationErrors | null>{
+    console.log("Validando correo en el servidor");
+
+    await sleep(); // esperar 2.5 medio
+    
+    const formValue = control.value;
+
+    if(formValue === "hola@mundo.com"){
+        return {emailTaken : true}
+    }
+
+    return null;
+}
+
+async function sleep(){
+    return new Promise(resolve => {
+        setTimeout(() =>{
+            resolve(true);
+        }, 2500);
+    });
+}
+
+.....
+email: ['', [Validators.required, Validators.email, Validators.pattern(this.formUtils.emailPattern)], [FormUtils.checkingServerResponse]],
+```
+
+### 
