@@ -1482,3 +1482,23 @@ export class SwitchesPage {
 
 </div>
 ```
+
+## Validaciones exresiones regulares
+```
+static namePattern = '([a-zA-Z]+) ([a-zA-Z]+)';
+static emailPattern = '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$';
+static notOnlySpacesPattern = '^[a-zA-Z0-9]+$';
+
+.....
+formUtils = FormUtils;
+
+myRegisterForm: FormGroup = this.fb.group({
+  name: ['', Validators.required, Validators.pattern(FormUtils.namePattern)],
+  email: ['', [Validators.required, Validators.email, Validators.pattern(this.formUtils.emailPattern)]],
+  username: ['', [Validators.requiredTrue, Validators.minLength(6), Validators.pattern(this.formUtils.notOnlySpacesPattern)]],
+  password: ['', [Validators.requiredTrue, Validators.minLength(6)]],
+  confirmPassword: ['', [Validators.requiredTrue]]
+})
+
+
+```
