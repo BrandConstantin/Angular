@@ -21,7 +21,10 @@ export class FormUtils{
                     return `El valor ingresado no es un correo electrónico`;
                 
                 case 'emailTaken':
-                    return `El valor ya está usado por otro usuario`;                    
+                    return `El valor ya está usado por otro usuario`;                                                   return `El valor ingresado no es un correo electrónico`;
+                
+                case 'notStrider':
+                    return `No se puede usar este valor como nickName`;    
                 
                 case 'pattern':
                     if(errors['pattern'].requiredPattern === FormUtils.emailPattern){
@@ -84,6 +87,15 @@ export class FormUtils{
         }
 
         return null;
+    }
+
+    // síncrona
+    static notStrider(control: AbstractControl): ValidationErrors | null{
+        console.log("Validando nickname");
+       
+        const formValue = control.value;
+
+        return formValue === 'strider' ? {notStrider : true} : null;
     }
 }
 

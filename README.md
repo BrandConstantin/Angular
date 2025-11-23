@@ -1531,4 +1531,20 @@ async function sleep(){
 email: ['', [Validators.required, Validators.email, Validators.pattern(this.formUtils.emailPattern)], [FormUtils.checkingServerResponse]],
 ```
 
-### 
+### Validaciones síncrona
+```            
+case 'notStrider':
+  return `No se puede usar este valor como nickName`;  
+
+.....
+username: ['', [Validators.required, Validators.minLength(6), Validators.pattern(this.formUtils.notOnlySpacesPattern), FormUtils.notStrider]],
+
+.....
+static notStrider(control: AbstractControl): ValidationErrors | null{
+    console.log("Validando nickname");
+    
+    const formValue = control.value;
+
+    return formValue === 'strider' ? {notStrider : true} : null;
+}
+```
