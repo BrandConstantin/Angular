@@ -1605,3 +1605,5 @@ export class CountryPageComponent {
 }
 ```
 
+## Life Cycle Hooks
+Documentación: https://angular.dev/guide/components/lifecycle
