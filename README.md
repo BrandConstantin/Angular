@@ -1548,3 +1548,60 @@ static notStrider(control: AbstractControl): ValidationErrors | null{
     return formValue === 'strider' ? {notStrider : true} : null;
 }
 ```
+
+## Selectores
+```
+<select formControlName="country" class="form-control">
+  <option value="">-- Seleccione País --</option>
+
+  @for (country of countriesByRegion(); track country.cca3){
+  <option [value]="country.cca3">
+    {{ country.name.common }}
+  </option>
+  }
+
+</select>
+
+.....
+export class CountryPageComponent { 
+  fb = inject(FormBuilder);
+  countryService = inject(CountryService);
+
+  regions = signal(this.countryService.regions);
+
+  countriesByRegion = signal<Country[]>([]);
+  borders = signal<Country[]>([]);
+
+  myForm = this.fb.group({
+    region: ['', Validators.required],
+    country: ['', Validators.required],
+    border: ['', Validators.required],
+  });
+
+  onFormChanged = effect((onCleanup) => {
+    const formRegionChanged = this.onRegionChanged();
+
+    onCleanup(() => { 
+      formRegionChanged.unsubscribe();
+    });
+  });
+
+  onRegionChanged(){
+    return this.myForm.get('region')!.valueChanges
+    .pipe(
+      tap(() => this.myForm.get('country')!.setValue('')),
+      tap(() => this.myForm.get('border')!.setValue('')),
+      tap(() => {
+        this.borders.set([]);
+        this.countriesByRegion.set([]);
+      }),
+      switchMap(region => this.countryService.getCountriesByRegions(region! ?? '')) // transforma el observable en otro diferente
+    )
+    .subscribe(countries => {
+      this.countriesByRegion.set(countries);
+      console.log(countries);
+    })
+  }
+}
+```
+

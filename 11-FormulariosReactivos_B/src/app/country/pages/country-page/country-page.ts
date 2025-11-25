@@ -1,7 +1,9 @@
 import { JsonPipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CountryService } from '../../services/country.routes';
+import { filter, switchMap, tap } from 'rxjs';
+import { Country } from '../../services/interfaces/country.interface';
 
 @Component({
   selector: 'app-country-page',
@@ -15,9 +17,53 @@ export class CountryPageComponent {
 
   regions = signal(this.countryService.regions);
 
+  countriesByRegion = signal<Country[]>([]);
+  borders = signal<Country[]>([]);
+
   myForm = this.fb.group({
     region: ['', Validators.required],
     country: ['', Validators.required],
     border: ['', Validators.required],
   });
+
+  onFormChanged = effect((onCleanup) => {
+    const formRegionChanged = this.onRegionChanged();
+    const countrySubscription = this.onCountryChanged();
+
+    onCleanup(() => { 
+      formRegionChanged.unsubscribe();
+      countrySubscription.unsubscribe();
+    });
+  });
+
+  onRegionChanged(){
+    return this.myForm.get('region')!.valueChanges
+    .pipe(
+      tap(() => this.myForm.get('country')!.setValue('')),
+      tap(() => this.myForm.get('border')!.setValue('')),
+      tap(() => {
+        this.borders.set([]);
+        this.countriesByRegion.set([]);
+      }),
+      switchMap(region => this.countryService.getCountriesByRegions(region! ?? '')) // transforma el observable en otro diferente
+    )
+    .subscribe(countries => {
+      this.countriesByRegion.set(countries);
+      console.log(countries);
+    })
+  }
+
+  onCountryChanged(){
+    return this.myForm.get('country')!.valueChanges
+    .pipe(
+      tap(() => this.myForm.get('border')!.setValue('')),
+      filter(value => value!.length > 0),
+      switchMap(alphaCode => this.countryService.getCountryByAlphaCode(alphaCode ?? '')),
+      switchMap(country => this.countryService.getCountryNamesByCodesArray(country.borders))
+    )
+    .subscribe(borders => {
+      console.log({borders});
+      this.borders.set(borders);
+    })
+  }
 }
