@@ -9,5 +9,5 @@ import { Navbar } from './components/navbar/navbar';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('12-LyfeCycleHooks');
+  protected readonly title = signal('12-LifeCycleHooks');
 }
