@@ -653,7 +653,8 @@ export default class TrendingPageComponent implements AfterViewInit {
 * Dentro de la terminal click en F5 y se abre en modo debbug
 * O escribir dentro del código ```debugger;```
 
-## Country App
+## Country App 
+#### Con tailwindcss y daisyui
 * Iniciar proyecto ```05-CountrySPA-estructura``` y N para SSR y SSG
 * usar los recursos:
   - https://tailwindcss.com/docs/installation/framework-guides/angular
