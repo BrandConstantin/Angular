@@ -1608,3 +1608,17 @@ export class CountryPageComponent {
 
 ## Life Cycle Hooks
 Documentación: https://angular.dev/guide/components/lifecycle
+
+## Generar environments
+```
+ng g environments
+```
+1. Crear un token: https://console.mapbox.com/account/access-tokens
+2. Crear con ng g environments los envirnonments
+3. Crear el archivo .env y su copia
+4. Añadirlos a .gitignore para que nadie coja el token
+5. En el directorio raíz crear el archivo set-envs.js dentro de la carpeta scripts
+6. Instalar paquete dotenv: ```npm i -D dotenv```
+7. En terminal ejecutamos ```node ./scripts/set-envs.js``` o añadir el comando en scripts de package.json y ejecutar ```npm run set-envs``` (set-envs nombre de la variable)
+8. Si existe el error en cmd "[dotenv@17.2.3] injecting env (0) from ..\src\.env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit", se debe
+  modificar el require de env con ```require( 'dotenv' ).config({path: __dirname + './../src/.env'});```

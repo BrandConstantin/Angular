@@ -1,3 +1,12 @@
+Levantar proyecto en Dev
+
+Clonar repositorio
+Instalar dependencias
+Generar el .env basado en el .env.template
+Ejecutar el comando npm run set-envs
+
+
+
 # 13Maps
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.5.
