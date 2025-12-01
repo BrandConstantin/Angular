@@ -1622,3 +1622,28 @@ ng g environments
 7. En terminal ejecutamos ```node ./scripts/set-envs.js``` o añadir el comando en scripts de package.json y ejecutar ```npm run set-envs``` (set-envs nombre de la variable)
 8. Si existe el error en cmd "[dotenv@17.2.3] injecting env (0) from ..\src\.env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit", se debe
   modificar el require de env con ```require( 'dotenv' ).config({path: __dirname + './../src/.env'});```
+9. Vamos a https://docs.mapbox.com/mapbox-gl-js/guides/ y copiamos para instalar ```npm install --save mapbox-gl```
+10. Resultado
+```
+export class FullscreenMapPage implements AfterViewInit{ 
+  divElement = viewChild<ElementRef>('map');
+
+  async ngAfterViewInit(): Promise<void> {
+    if(!this.divElement()?.nativeElement) return;
+
+    await new Promise((resolve) => setTimeout(() =>resolve, 100));
+
+    const element = this.divElement()!.nativeElement;
+
+    const map = new mapboxgl.Map({
+      container: element, // container ID
+      style: 'mapbox://styles/mapbox/streets-v12', // style URL
+      center: [-74.5, 40], // starting position [lng, lat]
+      zoom: 9, // starting zoom
+    });
+  }
+}
+
+.....
+<div #map></div>
+```
