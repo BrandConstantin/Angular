@@ -1,7 +1,8 @@
 import { Component, ElementRef, signal, viewChild } from '@angular/core';
-import mapboxgl from 'mapbox-gl'; // or "const mapboxgl = require('mapbox-gl');"
+import mapboxgl, { LngLatLike } from 'mapbox-gl'; // or "const mapboxgl = require('mapbox-gl');"
 import { environment } from '../../../environments/environment.development';
 import { v4 as UUIDv4 } from 'uuid';
+import { JsonPipe } from '@angular/common';
 
 mapboxgl.accessToken = environment.mapboxKey;
 
@@ -12,8 +13,7 @@ interface Marker {
 
 @Component({
   selector: 'app-dinamic-marker-page',
-  standalone: true,
-  imports: [],
+  imports: [JsonPipe],
   templateUrl: './dinamic-marker-page.html',
 })
 export class DinamicMarkerPage { 
@@ -63,9 +63,9 @@ export class DinamicMarkerPage {
     if(!this.map()) return;
     const map = this.map()!;
 
-    const color = '#f54f23'.replace(/x/g, (y) => ((Math.random() * 16) | 0).toString(16));
+    const color = '#xxxxxx'.replace(/x/g, (y) => ((Math.random() * 16) | 0).toString(16));
 
-    console.log(event.lngLat);
+    //console.log(event.lngLat);
 
     const mapboxMarker = new mapboxgl.Marker({draggable: false, color: color})
       .setLngLat(event.lngLat)
@@ -77,5 +77,24 @@ export class DinamicMarkerPage {
     };
 
     this.markers.update((markers) => [newMarker, ...markers]);
+  }
+
+  // ir hasta el marcador
+  flyToMarker(lngLat: LngLatLike){
+    if(!this.map) return;
+
+    this.map()?.flyTo({
+      center: lngLat
+    })
+  }
+
+  // borrar marcador
+  deleteMarker(marker: Marker){
+    if(!this.map) return;
+    const map = this.map()!;
+
+    marker.mapboxMarker.remove();
+    this.markers.set(this.markers().filter((m) => m.id !== marker.id));
+    //this.markers.update(this.markers().filter((m) => m.id !== marker.id));
   }
 }
