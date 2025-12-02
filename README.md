@@ -1647,3 +1647,17 @@ export class FullscreenMapPage implements AfterViewInit{
 .....
 <div #map></div>
 ```
+11. ```npm i uuid``` para generar id de forma aleatoria
+
+### Marcadores
+```
+// marcadores
+const marker = new mapboxgl.Marker({draggable: true, color: 'red'})
+  .setLngLat(this.coordinates())
+  .addTo(map);
+
+// información marcador
+marker.on('dragend', (event) => {
+  console.log(event);
+})
+```
