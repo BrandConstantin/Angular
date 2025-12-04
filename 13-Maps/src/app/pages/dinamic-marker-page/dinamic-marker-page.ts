@@ -15,6 +15,13 @@ interface Marker {
   selector: 'app-dinamic-marker-page',
   imports: [JsonPipe],
   templateUrl: './dinamic-marker-page.html',
+  styles: `
+    div {
+      width: 100%;
+      height: 260px;
+    }
+
+  `,
 })
 export class DinamicMarkerPage { 
   divElement = viewChild<ElementRef>('map');
