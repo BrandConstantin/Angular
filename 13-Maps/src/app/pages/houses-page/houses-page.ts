@@ -24,7 +24,7 @@ export class HousesPage {
       description:
         'Un refugio tranquilo con vistas panorámicas al mar y jardines exuberantes.',
       price: 500_000,
-      lngLat: { lng: -0.861526, lat: 41.65649 },
+      lngLat: { lat: 36.7052, lng: -4.4319 },
       tags: ['Villa', 'Mar', 'Jardines'],
     },
     {
@@ -33,7 +33,7 @@ export class HousesPage {
       description:
         'Una casa luminosa y acogedora con amplias terrazas y piscina privada.',
       price: 750_000,
-      lngLat: { lng: -0.862, lat: 41.657 },
+      lngLat: {lat: 36.7082, lng: -4.4332 },
       tags: ['Casa', 'Sol', 'Terrazas'],
     },
     {
@@ -42,7 +42,7 @@ export class HousesPage {
       description:
         'Elegante propiedad con acabados de lujo y un diseño arquitectónico moderno.',
       price: 1_200_000,
-      lngLat: { lng: -0.863, lat: 41.658 },
+      lngLat: { lat: 36.7252, lng: -4.4519 },
       tags: ['Casa', 'Esmeralda', 'Acabados'],
     },
     {
@@ -51,7 +51,7 @@ export class HousesPage {
       description:
         'Encantadora hacienda con acceso directo al lago y un entorno natural impresionante.',
       price: 950_000,
-      lngLat: { lng: -0.864, lat: 41.659 },
+      lngLat: { lat: 36.7452, lng: -4.4377 },
       tags: ['Casa', 'Lago', 'Hacienda'],
     },
   ]);
