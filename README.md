@@ -1661,3 +1661,34 @@ marker.on('dragend', (event) => {
   console.log(event);
 })
 ```
+
+## Construir y Desplegar
+* Hacemos la construcción de la aplicación: ````ng build```
+* Tenemos los siguientes problemas que vamos a solucionar:
+```
+▲ [WARNING] bundle initial exceeded maximum budget. Budget 500.00 kB was not met by 1.47 MB with a total of 1.97 MB.
+
+▲ [WARNING] Module 'mapbox-gl' used by 'src/app/pages/fullscreen-map-page/fullscreen-map-page.ts' is not ESM
+
+  CommonJS or AMD dependencies can cause optimization bailouts.
+  For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+X [ERROR] bundle initial exceeded maximum budget. Budget 1.00 MB was not met by 974.33 kB with a total of 1.97 MB.
+```
+* Vamos a angular.json y dentro de build -> options añadimos ```"allowedCommonJsDependencies": ["mapbox-gl"],```
+* Vamos a angular.json y dentro de production -> budgets -> incrementamos en 
+```
+"maximumWarning": "1MB",
+"maximumError": "3MB"
+```
+* Si todo va bien está construida la carpeta dist -> nombre del proyecto -> browser
+* Vamos a https://www.netlify.com/ -> Add new project -> Deploy manually -> meter toda la carpeta browser
+* Proyecto subido a https://fancy-pudding-02c4fe.netlify.app/
+* Añadimos HashStrategy al proyecto en app.config.ts
+```
+{
+  provide: LocationStrategy,
+  useClass: HashLocationStrategy
+}
+```
+* Realizamos un nuevo ng build y la nueva carpeta la desplegamos en Deploy
