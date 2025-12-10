@@ -1692,3 +1692,28 @@ X [ERROR] bundle initial exceeded maximum budget. Budget 1.00 MB was not met by 
 }
 ```
 * Realizamos un nuevo ng build y la nueva carpeta la desplegamos en Deploy
+
+## Path alias
+Podemos simplificar las rutas, en tsconfig.json añadiendo en compilerOptions unos alias:
+```
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["./src/app/*"],
+      "@/auth/*": ["./src/app/auth/*"],
+      "@/dashboard/*": ["./src/app/admin-dashboard/*"],
+      "@/products/*": ["./src/app/products/*"],
+      "@/shared/*": ["./src/app/shared/*"],
+      "@/store-front/*": ["./src/app/store-front/*"],
+    },
+    ....
+  }
+```
+Por esto la importación cambia la rutas y en vez del path completo muestra el alias:
+```
+// sin alias
+import { ProductCard } from '../../../products/components/product-card';
+// con alias
+import { ProductCard } from '@/products/components/product-card';
+```
+
