@@ -1,5 +1,20 @@
 # 14AppAdministrativa
+Arrancar la parte backend del proyecto, 14-AppAdministrativa-nest:
+1. Clonar proyecto
+2. yarn install o npm install
+3. Clonar el archivo .env.template y renombrarlo a .env
+4. Cambiar las variables de entorno
+5. Levantar la base de datos
+```docker-compose up -d```
+6. Levantar:
+```
+npm run start:dev
+yarn start:dev
+```
+7. Ejecutar SEED
+http://localhost:3000/api/seed
 
+-------------------------------------------------------------
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.5.
 
 ## Development server

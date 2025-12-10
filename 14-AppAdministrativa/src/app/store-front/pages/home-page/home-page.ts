@@ -1,8 +1,7 @@
 import { ProductCard } from '@/products/components/product-card';
 import { ProductsService } from '@/products/services/product.service';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { map, of } from 'rxjs';
 //import { ProductCard } from '../../../products/components/product-card';
 
 @Component({
@@ -17,7 +16,7 @@ export class HomePage {
   productsResource = rxResource({
     params: () => ({}),
     stream: ({ params }) => {
-      return this.productsService.getProducts();
+      return this.productsService.getProducts({});
     }
   })
 }
