@@ -1720,3 +1720,69 @@ import { ProductCard } from '@/products/components/product-card';
 ## Carousel imagenes
 https://swiperjs.com/get-started
 
+## Paginación
+```
+<app-pagination [pages]="productsResource.value()?.pages ?? 0"
+  [currentPage]="currentPage()" />
+
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-2 gap-3" >
+  @for (product of productsResource.value()?.products; track $index) {
+  <product-card [product]="product" />
+  }
+</div>
+
+.....
+
+<div class="join flex justify-center items-center mt-4 mb-10">
+   @for (page of getPagesList(); track page) {
+     <button
+       class="join-item btn"
+       [class.btn-primary]="page === activePage()"
+       [routerLink]="[]"
+       [queryParams]="{ page: page }"
+       (click)="activePage.set(page)"
+     >
+       {{ page }}
+     </button>
+   }
+</div>
+
+.....
+
+export class HomePage { 
+  productsService = inject(ProductsService);
+
+  activatedRoute = inject(ActivatedRoute);
+  currentPage = toSignal(this.activatedRoute.queryParamMap.pipe(
+    map((params) => (params.get('page') ? +params.get('page')! : 1)),
+    map((page) => (isNaN(page) || page < 1 ? 1 : page))
+   ),
+   { initialValue: 1 }
+  );
+
+  // Usando rxResource, ha cambiado de request por params y loader por stream a partir de Angular 20
+  productsResource = rxResource({
+    params: () => ({ page : this.currentPage() }),
+    stream: ({ params }) => {
+      return this.productsService.getProducts({
+        offset: (params.page - 1) * 8,
+        limit: 8,
+      });
+    }
+  })
+}
+
+.....
+
+export class Pagination { 
+  pages = input<number>(0);
+  currentPage = input<number>(1);
+
+  activePage = linkedSignal(this.currentPage);
+
+  getPagesList = computed(() => {
+    return Array.from({ length: this.pages() }, (_, i) => i + 1);
+  });
+}
+```
