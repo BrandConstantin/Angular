@@ -1,4 +1,4 @@
-import { ProductCard } from '@/products/components/product-card';
+import { ProductCard } from '@/products/components/product-card/product-card';
 import { ProductsService } from '@/products/services/product.service';
 import { Component, inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
