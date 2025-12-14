@@ -1717,3 +1717,6 @@ import { ProductCard } from '../../../products/components/product-card';
 import { ProductCard } from '@/products/components/product-card';
 ```
 
+## Carousel imagenes
+https://swiperjs.com/get-started
+
