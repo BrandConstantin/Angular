@@ -1814,3 +1814,16 @@ export class GenderPage {
   [currentPage]="paginationService.currentPage()" />  
 ```
 
+## Cache 
+```
+private productsCache = new Map<string, ProductsResponse>();
+
+getProducts(options: Options): Observable<ProductsResponse> {
+  const key = `${limit}-${offset}-${gender}`;
+
+  if (this.productsCache.has(key)) {
+    return of(this.productsCache.get(key)!);
+  }
+
+  .....
+```
