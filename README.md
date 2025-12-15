@@ -1814,7 +1814,7 @@ export class GenderPage {
   [currentPage]="paginationService.currentPage()" />  
 ```
 
-## Cache 
+## Cache servicio
 ```
 private productsCache = new Map<string, ProductsResponse>();
 
