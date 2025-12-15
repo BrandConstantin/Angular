@@ -1786,3 +1786,44 @@ export class Pagination {
   });
 }
 ```
+
+## Servicio de paginación
+```
+export class GenderPage { 
+  route = inject(ActivatedRoute);
+  productsService = inject(ProductsService);
+  paginationService = inject(PaginationService);
+  
+  gender = toSignal( this.route.params.pipe(map(({ gender }) => gender)) );
+
+  // Usando rxResource, ha cambiado de request por params y loader por stream a partir de Angular 20
+  productsResource = rxResource({
+    params: () => ({gender: this.gender(), page : this.paginationService.currentPage() }),
+    stream: ({ params }) => {
+      return this.productsService.getProducts({
+        gender: params.gender,
+        offset: (params.page - 1) * 8,
+        limit: 8,
+      });
+    }
+  });
+}
+  .....
+
+<app-pagination [pages]="productsResource.value()?.pages ?? 0"
+  [currentPage]="paginationService.currentPage()" />  
+```
+
+## Cache servicio
+```
+private productsCache = new Map<string, ProductsResponse>();
+
+getProducts(options: Options): Observable<ProductsResponse> {
+  const key = `${limit}-${offset}-${gender}`;
+
+  if (this.productsCache.has(key)) {
+    return of(this.productsCache.get(key)!);
+  }
+
+  .....
+```
