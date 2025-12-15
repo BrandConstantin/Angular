@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "14-AppAdministrativa": {
+    "16-AppAdministrativa": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -62,10 +62,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "14-AppAdministrativa:build:production"
+              "buildTarget": "16-AppAdministrativa:build:production"
             },
             "development": {
-              "buildTarget": "14-AppAdministrativa:build:development"
+              "buildTarget": "16-AppAdministrativa:build:development"
             }
           },
           "defaultConfiguration": "development"
