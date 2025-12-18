@@ -1827,3 +1827,68 @@ getProducts(options: Options): Observable<ProductsResponse> {
 
   .....
 ```
+
+## Login
+```
+export class LoginPage { 
+  formBuilder = inject(FormBuilder);
+  hasError = signal(false);
+  isPosting = signal(false);
+
+  authService = inject(AuthService);
+
+  loginForm = this.formBuilder.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(6)]],
+  });
+
+  onSubmit(){
+    if (this.loginForm.invalid) {
+      this.hasError.set(true);
+      setTimeout(() => this.hasError.set(false), 3000);
+      return;
+    }
+
+    const { email = '', password = '' } = this.loginForm.value;
+
+    this.authService.login(email!, password!).subscribe( resp => {
+      console.log('Login successful', resp);
+    });    
+  }
+}
+```
+
+## Auth Service
+```
+export class AuthService {
+    private _authStatus = signal<AuthStatus>('checking');
+    private _user = signal<User | null>(null);
+    private _token = signal<string | null>(null);
+    private http = inject(HttpClient);
+
+    authStatus = computed<AuthStatus>(() => {
+        if(this._authStatus() === 'checking') return 'checking';
+
+        if(this._user() && this._token()) {
+            return 'authenticated';
+        }
+
+        return 'not-authenticated';
+    });
+
+    user = computed<User | null>(() => this._user());
+    token = computed<string | null>(() => this._token());
+
+    login(email: string, password: string) {
+    this.http.post<AuthResponse>(`${baseUrl}/auth/login`, { 
+        email: email, password: password })
+        .pipe(tap(response => {
+            this._authStatus.set('authenticated');
+            this._user.set(response.user);
+            this._token.set(response.token);
+
+            localStorage.setItem('token', response.token);
+        }));   
+    }
+}
+```
