@@ -2,7 +2,7 @@
 @import "tailwindcss";
 
 @plugin "daisyui" {
-  themes: retro;
+  themes: light --default, dark --prefersdark, retro;
 }
 
 @layer base{
