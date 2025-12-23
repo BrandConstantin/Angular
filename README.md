@@ -1948,3 +1948,77 @@ checkAuthStatus(): Observable<boolean> {
 }
 ```
 
+## Logout
+```
+logout() {
+    this._authStatus.set('not-authenticated');
+    this._user.set(null);
+    this._token.set(null);
+    localStorage.removeItem('token');
+}
+
+.....
+<div class="navbar-end gap-4">
+  @if ( authService.authStatus() === 'authenticated' ) {
+  <button class="btn btn-ghost">
+    {{ authService.user()?.fullName }}
+  </button>
+  <button class="btn btn-sm btn-error" (click)="authService.logout()">
+    Salir
+  </button>
+  }
+  <!--  -->
+  @else if ( authService.authStatus() === 'not-authenticated' ) {
+  <a routerLink="/auth/login" class="btn btn-secondary">Login</a>
+  }
+  <!--  -->
+  @else {
+  <a class="btn btn-ghost">...</a>
+  }
+</div>
+```
+
+## Interceptores
+```
+import { HttpEvent, HttpEventType, HttpHandlerFn, HttpRequest } from "@angular/common/http";
+import { Observable, tap } from "rxjs";
+
+export function loggingInterceptor(
+  req: HttpRequest<unknown>,
+  next: HttpHandlerFn
+): Observable<HttpEvent<unknown>> {
+  return next(req).pipe(
+    tap((event) => {
+      if (event.type === HttpEventType.Response) {
+        console.log(req.url, 'returned a response with status', event.status);
+      }
+    })
+  );
+}
+
+.....
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([authInterceptor, loggingInterceptor])
+    ),
+  ]
+};
+
+.....
+export function authInterceptor(
+  req: HttpRequest<unknown>,
+  next: HttpHandlerFn
+) {
+  const token = inject(AuthService).token();
+
+  const newReq = req.clone({
+    headers: req.headers.append('Authorization', `Bearer ${token}`),
+  });
+  return next(newReq);
+}
+```
