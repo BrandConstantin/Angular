@@ -1978,3 +1978,47 @@ logout() {
 </div>
 ```
 
+## Interceptores
+```
+import { HttpEvent, HttpEventType, HttpHandlerFn, HttpRequest } from "@angular/common/http";
+import { Observable, tap } from "rxjs";
+
+export function loggingInterceptor(
+  req: HttpRequest<unknown>,
+  next: HttpHandlerFn
+): Observable<HttpEvent<unknown>> {
+  return next(req).pipe(
+    tap((event) => {
+      if (event.type === HttpEventType.Response) {
+        console.log(req.url, 'returned a response with status', event.status);
+      }
+    })
+  );
+}
+
+.....
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([authInterceptor, loggingInterceptor])
+    ),
+  ]
+};
+
+.....
+export function authInterceptor(
+  req: HttpRequest<unknown>,
+  next: HttpHandlerFn
+) {
+  const token = inject(AuthService).token();
+
+  const newReq = req.clone({
+    headers: req.headers.append('Authorization', `Bearer ${token}`),
+  });
+  return next(newReq);
+}
+```
