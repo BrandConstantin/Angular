@@ -1892,3 +1892,25 @@ export class AuthService {
     }
 }
 ```
+
+## Manejo de excepciones:
+```
+login(email: string, password: string): Observable<boolean> {
+return this.http.post<AuthResponse>(`${baseUrl}/auth/login`, { 
+    email: email, password: password })
+    .pipe(tap(response => {
+        this._authStatus.set('authenticated');
+        this._user.set(response.user);
+        this._token.set(response.token);
+
+        localStorage.setItem('token', response.token);
+    }), 
+    map(() => true),
+    catchError((error: any) => {
+        this._authStatus.set('not-authenticated');
+        this._user.set(null);
+        this._token.set(null);
+        return of(false);
+    }));
+}
+```
