@@ -1948,3 +1948,33 @@ checkAuthStatus(): Observable<boolean> {
 }
 ```
 
+## Logout
+```
+logout() {
+    this._authStatus.set('not-authenticated');
+    this._user.set(null);
+    this._token.set(null);
+    localStorage.removeItem('token');
+}
+
+.....
+<div class="navbar-end gap-4">
+  @if ( authService.authStatus() === 'authenticated' ) {
+  <button class="btn btn-ghost">
+    {{ authService.user()?.fullName }}
+  </button>
+  <button class="btn btn-sm btn-error" (click)="authService.logout()">
+    Salir
+  </button>
+  }
+  <!--  -->
+  @else if ( authService.authStatus() === 'not-authenticated' ) {
+  <a routerLink="/auth/login" class="btn btn-secondary">Login</a>
+  }
+  <!--  -->
+  @else {
+  <a class="btn btn-ghost">...</a>
+  }
+</div>
+```
+
