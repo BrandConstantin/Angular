@@ -2022,3 +2022,43 @@ export function authInterceptor(
   return next(newReq);
 }
 ```
+
+## Guard
+Es una "guardia de seguridad" pendiente si alguien puede entrar, cargar o salir de una ruta
+Se modifica app.route.ts
+```
+export const routes: Routes = [
+    {
+        path: 'auth',
+        loadChildren: () => import('./auth/auth.routes'),
+        canMatch: [
+            NotAuthenticatedGuard
+        ]
+    },
+    {
+        path: '',
+        loadChildren: () => import('./store-front/store-front.routes')
+    }
+];
+
+.....
+export const NotAuthenticatedGuard: CanMatchFn = async (
+  route: Route,
+  segments: UrlSegment[]
+) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  const isAuthenticated = await firstValueFrom(authService.checkAuthStatus());
+
+  if (isAuthenticated) {
+    router.navigateByUrl('/');
+    console.log('Authenticated user tried to access auth routes. Redirecting to home.');
+    return false;
+  }
+
+  console.log('NotAuthenticatedGuard: access granted to auth routes');
+
+  return true;
+};
+```

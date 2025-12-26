@@ -21,10 +21,10 @@ export class AuthService {
     });
 
     authStatus = computed<AuthStatus>(() => {
-        if(this._authStatus() === 'checking') return 'checking';
+        if (this._authStatus() === 'checking') return 'checking';
 
-        if(this._user() && this._token()) {
-            return 'authenticated';
+        if (this._user()) {
+        return 'authenticated';
         }
 
         return 'not-authenticated';
@@ -33,26 +33,37 @@ export class AuthService {
     user = computed<User | null>(() => this._user());
     token = computed<string | null>(() => this._token());
 
-    login(email: string, password: string): Observable<boolean> {
-    return this.http.post<AuthResponse>(`${baseUrl}/auth/login`, { 
-        email: email, password: password })
-        .pipe(tap(response => this.handleAuthSuccess(response)), 
+  login(email: string, password: string): Observable<boolean> {
+    return this.http
+      .post<AuthResponse>(`${baseUrl}/auth/login`, {
+        email: email,
+        password: password,
+      })
+      .pipe(
+        tap((resp) => this.handleAuthSuccess(resp)),
         map(() => true),
-        catchError((error: any) => this.handleAuthFailure(error)));
-    }
+        catchError((error: any) => this.handleAuthFailure(error))
+      );
+  }
 
     checkAuthStatus(): Observable<boolean> {
         const token = localStorage.getItem('token');
         if(!token) {
-            this._authStatus.set('not-authenticated');
+            this.logout();
             return of(false);
         }
 
-        return this.http.get<AuthResponse>(`${baseUrl}/auth/check-status`, { 
-            headers: { 'Authorization': `Bearer ${token}` }})
-         .pipe(tap(response => this.handleAuthSuccess(response)), 
-        map(() => true),
-        catchError((error: any) => this.handleAuthFailure(error)));
+        return this.http
+        .get<AuthResponse>(`${baseUrl}/auth/check-status`, {
+            // headers: {
+            //   Authorization: `Bearer ${token}`,
+            // },
+        })
+        .pipe(
+            tap((resp) => this.handleAuthSuccess(resp)),
+            map(() => true),
+            catchError((error: any) => this.handleAuthFailure(error))
+        );
     }
 
     logout() {
@@ -67,7 +78,6 @@ export class AuthService {
         this._user.set(user);
         this._token.set(token);
         localStorage.setItem('token', token);
-        return of(true);
     }
 
     private handleAuthFailure(error: any) {
