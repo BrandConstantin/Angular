@@ -32,19 +32,20 @@ export class AuthService {
 
     user = computed<User | null>(() => this._user());
     token = computed<string | null>(() => this._token());
+    isAdmin = computed<boolean>(() => this._user()?.roles.includes('admin') ?? false);
 
-  login(email: string, password: string): Observable<boolean> {
-    return this.http
-      .post<AuthResponse>(`${baseUrl}/auth/login`, {
-        email: email,
-        password: password,
-      })
-      .pipe(
-        tap((resp) => this.handleAuthSuccess(resp)),
-        map(() => true),
-        catchError((error: any) => this.handleAuthFailure(error))
-      );
-  }
+    login(email: string, password: string): Observable<boolean> {
+        return this.http
+        .post<AuthResponse>(`${baseUrl}/auth/login`, {
+            email: email,
+            password: password,
+        })
+        .pipe(
+            tap((resp) => this.handleAuthSuccess(resp)),
+            map(() => true),
+            catchError((error: any) => this.handleAuthFailure(error))
+        );
+    }
 
     checkAuthStatus(): Observable<boolean> {
         const token = localStorage.getItem('token');
@@ -52,6 +53,8 @@ export class AuthService {
             this.logout();
             return of(false);
         }
+
+        // implementar cache en futuro
 
         return this.http
         .get<AuthResponse>(`${baseUrl}/auth/check-status`, {
