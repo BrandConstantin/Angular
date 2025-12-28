@@ -3,9 +3,10 @@ import { Product } from '@/products/interfaces/product.interface';
 import { ProductsService } from '@/products/services/product.service';
 import { FormErrorLabel } from '@/shared/components/form-error-label/form-error-label';
 import { FormUtils } from '@/utils/form-utils';
-import { Component, inject, input, OnInit } from '@angular/core';
+import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'product-details',
@@ -17,6 +18,8 @@ export class ProductDetails implements OnInit {
   router = inject(Router);
   fb = inject(FormBuilder);
   productsService = inject(ProductsService);
+
+  wasSaved = signal(false);
 
   productForm = this.fb.group({
     title: ['', Validators.required],
@@ -60,7 +63,7 @@ export class ProductDetails implements OnInit {
     this.productForm.patchValue({ sizes: currentSizes });
   }
 
-  onSubmit() {
+  async onSubmit() {
     const isValidForm = this.productForm.valid;
     console.log(this.productForm.value, isValidForm);
 
@@ -77,27 +80,33 @@ export class ProductDetails implements OnInit {
     console.log('Producto a guardar', productLike);
 
     if(this.product().id === 'new') {   // crear producto      
-      this.productsService.createProduct(productLike).subscribe({
-        next: product => {
-          console.log('Producto creado', product);
-          // navegar al producto editado
-          this.router.navigate(['/admin/products', product.id]);
-        },
-        error: err => {
-          console.error('Error creando producto', err);
-        }
-      });
+      try{
+        const product = await firstValueFrom(this.productsService.createProduct(productLike));
+        console.log('Producto creado', product);
+
+        // navegar al producto editado
+        this.router.navigate(['/admin/products', product.id]);
+      } catch(error) {
+        console.error('Error al crear el producto', error);
+      }
     } else {    // actualizar producto
-      this.productsService.updateProduct(this.product().id, productLike).subscribe({
-        next: product => {
-          console.log('Producto actualizado', product);
-          // navegar al producto editado
-          //this.router.navigate(['/admin/products', product.id]);
-        },
-        error: err => {
-          console.error('Error actualizando producto', err);
-        }
-      });
+      try {
+        await firstValueFrom(
+          this.productsService.updateProduct(this.product().id, productLike)
+        );
+      } catch (error) {
+        console.error('Error al actualizar el producto', error);
+      }
     }
+
+    this.wasSavedFunction();
+  }
+
+  private wasSavedFunction() {
+    this.wasSaved.set(true);
+
+    setTimeout(() => {
+      this.wasSaved.set(false);
+    }, 3000);
   }
 }
