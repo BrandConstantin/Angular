@@ -2063,7 +2063,7 @@ export const NotAuthenticatedGuard: CanMatchFn = async (
 };
 ```
 
-## Actualizar información BBDD
+## Actualizar información producto BBDD
 Envío desde formulario: 
 ```
 onSubmit() {
@@ -2098,6 +2098,65 @@ Guardar:
 updateProduct(id: string, product: Partial<Product>): Observable<Product> {
   console.log('Updating product...', product);
 
-  return this.http.patch<Product>(`${baseUrl}/products/${id}`, product); 
+  return this.http.patch<Product>(`${baseUrl}/products/${id}`, product).pipe(
+    tap((updatedProduct) => {
+      this.updateProductCache(updatedProduct);
+    })
+  );
+}
+
+updateProductCache(product: Product) {
+  const productId = product.id;
+  this.productCache.set(productId, product);
+  // invalidar caches de listas que puedan contener este producto
+  this.productsCache.forEach((productResponse) => {
+    productResponse.products = productResponse.products.map(
+      (currentProduct) =>
+        currentProduct.id === productId ? product : currentProduct
+    );
+  });
+
+  console.log('Caché actualizado');
+}
+```
+
+## Crear nuevo producto en BBDD
+Envío desde formulario:
+```
+const emptyProduct: Product = {
+  id: 'new',
+  title: '',
+  description: '',
+  price: 0,
+  slug: '',
+  stock: 0,
+  sizes: [],
+  images: [],
+  gender: Gender.Unisex,
+  tags: [],
+  user: {} as User
+};
+
+if(this.product().id === 'new') {   // crear producto      
+  this.productsService.createProduct(productLike).subscribe({
+    next: product => {
+      console.log('Producto creado', product);
+      // navegar al producto editado
+      this.router.navigate(['/admin/products', product.id]);
+    },
+    error: err => {
+      console.error('Error creando producto', err);
+    }
+  });
+}
+```
+Guardar:
+```
+createProduct(productLike: Partial<Product>): Observable<Product> {
+  return this.http.post<Product>(`${baseUrl}/products`, productLike).pipe(
+    tap((newProduct) => {
+      this.updateProductCache(newProduct);
+    })
+  );
 }
 ```
