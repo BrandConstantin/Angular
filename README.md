@@ -2098,6 +2098,24 @@ Guardar:
 updateProduct(id: string, product: Partial<Product>): Observable<Product> {
   console.log('Updating product...', product);
 
-  return this.http.patch<Product>(`${baseUrl}/products/${id}`, product); 
+  return this.http.patch<Product>(`${baseUrl}/products/${id}`, product).pipe(
+    tap((updatedProduct) => {
+      this.updateProductCache(updatedProduct);
+    })
+  );
+}
+
+updateProductCache(product: Product) {
+  const productId = product.id;
+  this.productCache.set(productId, product);
+  // invalidar caches de listas que puedan contener este producto
+  this.productsCache.forEach((productResponse) => {
+    productResponse.products = productResponse.products.map(
+      (currentProduct) =>
+        currentProduct.id === productId ? product : currentProduct
+    );
+  });
+
+  console.log('Caché actualizado');
 }
 ```
