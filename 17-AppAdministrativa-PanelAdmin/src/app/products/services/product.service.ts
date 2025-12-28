@@ -53,7 +53,7 @@ export class ProductsService {
       );
   }
 
-    getProductById(id: string): Observable<Product> {
+  getProductById(id: string): Observable<Product> {
     /*if (id === 'new') {
       return of(emptyProduct);
     }*/
@@ -65,5 +65,11 @@ export class ProductsService {
     return this.http
       .get<Product>(`${baseUrl}/products/${id}`)
       .pipe(tap((product) => this.productCache.set(id, product)));
+  }
+
+  updateProduct(id: string, product: Partial<Product>): Observable<Product> {
+    console.log('Updating product...', product);
+
+    return this.http.patch<Product>(`${baseUrl}/products/${id}`, product); 
   }
 }
