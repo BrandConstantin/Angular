@@ -1,5 +1,6 @@
 import { ProductCarousel } from '@/products/components/product-carousel/product-carousel';
 import { Product } from '@/products/interfaces/product.interface';
+import { ProductsService } from '@/products/services/product.service';
 import { FormErrorLabel } from '@/shared/components/form-error-label/form-error-label';
 import { FormUtils } from '@/utils/form-utils';
 import { Component, inject, input, OnInit } from '@angular/core';
@@ -15,6 +16,7 @@ export class ProductDetails implements OnInit {
   product = input.required<Product>();
   router = inject(Router);
   fb = inject(FormBuilder);
+  productsService = inject(ProductsService);
 
   productForm = this.fb.group({
     title: ['', Validators.required],
@@ -61,5 +63,28 @@ export class ProductDetails implements OnInit {
   onSubmit() {
     const isValidForm = this.productForm.valid;
     console.log(this.productForm.value, isValidForm);
+
+    this.productForm.markAllAsTouched();
+    const formValue = this.productForm.value;
+
+    if (!isValidForm) return;
+
+    const productLike: Partial<Product> = {
+      ...(formValue as any),
+      tags: formValue.tags?.toLocaleLowerCase().split(',').map(tag => tag.trim()) || [],
+    };
+
+    console.log('Producto a guardar', productLike);
+
+    this.productsService.updateProduct(this.product().id, productLike).subscribe({
+      next: product => {
+        console.log('Producto actualizado', product);
+        // navegar al producto editado
+        //this.router.navigate(['/admin/products', product.id]);
+      },
+      error: err => {
+        console.error('Error actualizando producto', err);
+      }
+    });
   }
 }
