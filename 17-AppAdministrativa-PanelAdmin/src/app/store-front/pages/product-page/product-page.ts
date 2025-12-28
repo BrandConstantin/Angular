@@ -17,6 +17,6 @@ export class ProductPage {
 
   productResource = rxResource({
     params: () => ({idSlug: this.productIdSlug}),
-    stream: ({ params }) => this.productService.getProductById(params.idSlug),
+    stream: ({ params }) => this.productService.getProductByIdSlug(params.idSlug),
   });
 }
