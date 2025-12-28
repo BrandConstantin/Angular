@@ -76,15 +76,28 @@ export class ProductDetails implements OnInit {
 
     console.log('Producto a guardar', productLike);
 
-    this.productsService.updateProduct(this.product().id, productLike).subscribe({
-      next: product => {
-        console.log('Producto actualizado', product);
-        // navegar al producto editado
-        //this.router.navigate(['/admin/products', product.id]);
-      },
-      error: err => {
-        console.error('Error actualizando producto', err);
-      }
-    });
+    if(this.product().id === 'new') {   // crear producto      
+      this.productsService.createProduct(productLike).subscribe({
+        next: product => {
+          console.log('Producto creado', product);
+          // navegar al producto editado
+          this.router.navigate(['/admin/products', product.id]);
+        },
+        error: err => {
+          console.error('Error creando producto', err);
+        }
+      });
+    } else {    // actualizar producto
+      this.productsService.updateProduct(this.product().id, productLike).subscribe({
+        next: product => {
+          console.log('Producto actualizado', product);
+          // navegar al producto editado
+          //this.router.navigate(['/admin/products', product.id]);
+        },
+        error: err => {
+          console.error('Error actualizando producto', err);
+        }
+      });
+    }
   }
 }
