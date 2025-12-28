@@ -41,7 +41,7 @@ export class ProductsService {
         );
   }
 
-  getProductById(idSlug: string): Observable<Product> {
+  getProductByIdSlug(idSlug: string): Observable<Product> {
     if (this.productCache.has(idSlug)) {
       return of(this.productCache.get(idSlug)!);
     }
@@ -51,5 +51,19 @@ export class ProductsService {
         tap((resp) => console.log(resp)), 
         tap((resp) => this.productCache.set(idSlug, resp))
       );
+  }
+
+    getProductById(id: string): Observable<Product> {
+    /*if (id === 'new') {
+      return of(emptyProduct);
+    }*/
+
+    if (this.productCache.has(id)) {
+      return of(this.productCache.get(id)!);
+    }
+
+    return this.http
+      .get<Product>(`${baseUrl}/products/${id}`)
+      .pipe(tap((product) => this.productCache.set(id, product)));
   }
 }
