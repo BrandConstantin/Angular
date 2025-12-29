@@ -2227,3 +2227,10 @@ onFilesChanged(event: Event) {
   this.tempImages.set(imageUrls);
 }
 ```
+
+## Aprovisionar la BBDD
+* Base de datos en Postgres: https://neon.com/
+  * Se crea proyecto y luego en apartado Connect se copia la cadena de conexión de tipo ```psql 'postgresql://neondb_owner:npg_XXXXX```
+  * Cambiar en el proyecto nest el package.json -> engine -> la versión de node a la más superior
+* Desplegar en producción, en netifly o render: https://render.com/
+  * Escogemos desplegar un web service
