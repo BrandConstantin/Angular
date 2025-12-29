@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { Gender, Product, ProductsResponse } from "../interfaces/product.interface";
-import { Observable, of, tap } from "rxjs";
+import { forkJoin, map, Observable, of, switchMap, tap } from "rxjs";
 import { environment } from "src/environments/environment.development";
 import { User } from "@/auth/interfaces/user.interface";
 
@@ -82,18 +82,32 @@ export class ProductsService {
       .pipe(tap((product) => this.productCache.set(id, product)));
   }
 
-  updateProduct(id: string, product: Partial<Product>): Observable<Product> {
-    console.log('Updating product...', product);
+  updateProduct(id: string, product: Partial<Product>, imageFileList?: FileList): Observable<Product> {
+    const currentImages = product.images ?? [];
 
-    return this.http.patch<Product>(`${baseUrl}/products/${id}`, product).pipe(
+    return this.uploadImages(imageFileList).pipe(
+      map(imageNames => ({
+        ...product, images: [...currentImages, ...imageNames]
+      })),
+      switchMap((updatedProduct) => 
+        this.http.patch<Product>(`${baseUrl}/products/${id}`, updatedProduct)
+      ),
       tap((updatedProduct) => {
         this.updateProductCache(updatedProduct);
       })
     );
   }
  
-  createProduct(productLike: Partial<Product>): Observable<Product> {
-    return this.http.post<Product>(`${baseUrl}/products`, productLike).pipe(
+  createProduct(productLike: Partial<Product>, imageFileList?: FileList): Observable<Product> {
+    const currentImages = productLike.images ?? [];
+
+    return this.uploadImages(imageFileList).pipe(
+      map(imageNames => ({
+        ...productLike, images: [...currentImages, ...imageNames]
+      })),
+      switchMap((newProduct) => 
+        this.http.post<Product>(`${baseUrl}/products`, newProduct)
+      ),
       tap((newProduct) => {
         this.updateProductCache(newProduct);
       })
@@ -112,5 +126,27 @@ export class ProductsService {
     });
 
     console.log('Caché actualizado');
+  }
+
+  // subir imagenes a la BBDD
+  uploadImages(files?: FileList): Observable<string[]> {
+    if (!files ){ return of([]); }
+
+    const  uploadObservable = Array.from(files).map((imageFile => 
+      this.uploadImage(imageFile)
+    ));
+    
+    return forkJoin(uploadObservable).pipe(
+      tap((imageNames) => console.log('Imágenes subidas', {imageNames}))
+    );
+  }
+
+  uploadImage(imageFile: File): Observable<string> {
+    const formData = new FormData();
+    formData.append('file', imageFile);
+
+    return this.http.post<{ fileName: string }>(`${baseUrl}/files/product`, formData).pipe(
+      map((response) => response.fileName)
+    );
   }
 }
