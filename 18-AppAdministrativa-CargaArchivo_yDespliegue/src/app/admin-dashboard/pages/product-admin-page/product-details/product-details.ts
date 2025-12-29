@@ -3,7 +3,7 @@ import { Product } from '@/products/interfaces/product.interface';
 import { ProductsService } from '@/products/services/product.service';
 import { FormErrorLabel } from '@/shared/components/form-error-label/form-error-label';
 import { FormUtils } from '@/utils/form-utils';
-import { Component, inject, input, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -20,6 +20,14 @@ export class ProductDetails implements OnInit {
   productsService = inject(ProductsService);
 
   wasSaved = signal(false);
+  imageFileList: FileList | undefined = undefined;
+  tempImages = signal<string[]>([]);
+
+  imagesToCarousel = computed(() => {
+    const currentProductImages: string[] = this.product().images || [];
+    const tempImages: string[] = this.tempImages(); 
+    return [...currentProductImages, ...tempImages];
+  });
 
   productForm = this.fb.group({
     title: ['', Validators.required],
@@ -81,7 +89,7 @@ export class ProductDetails implements OnInit {
 
     if(this.product().id === 'new') {   // crear producto      
       try{
-        const product = await firstValueFrom(this.productsService.createProduct(productLike));
+        const product = await firstValueFrom(this.productsService.createProduct(productLike, this.imageFileList));
         console.log('Producto creado', product);
 
         // navegar al producto editado
@@ -92,7 +100,7 @@ export class ProductDetails implements OnInit {
     } else {    // actualizar producto
       try {
         await firstValueFrom(
-          this.productsService.updateProduct(this.product().id, productLike)
+          this.productsService.updateProduct(this.product().id, productLike, this.imageFileList)
         );
       } catch (error) {
         console.error('Error al actualizar el producto', error);
@@ -108,5 +116,15 @@ export class ProductDetails implements OnInit {
     setTimeout(() => {
       this.wasSaved.set(false);
     }, 3000);
+  }
+
+  onFilesChanged(event: Event) {
+    const fileList = (event.target as HTMLInputElement).files;
+    this.imageFileList = fileList? fileList : undefined;
+
+    const imageUrls = Array.from(fileList ?? []).map(file => URL.createObjectURL(file));  
+    console.log('Archivos seleccionados', imageUrls);
+
+    this.tempImages.set(imageUrls);
   }
 }

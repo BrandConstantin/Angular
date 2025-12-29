@@ -2160,3 +2160,70 @@ createProduct(productLike: Partial<Product>): Observable<Product> {
   );
 }
 ```
+
+## Subir imagenes
+Modificar html 
+```
+<product-carousel [images]="imagesToCarousel()" />
+
+<input type="file" class="file-input file-input-bordered w-full mt-4" 
+  multiple accept="image/*" (change)="onFilesChanged($event)"/>
+
+```
+Modificar carousel de imagenes para mostrarlo:
+```
+ngOnChanges(changes: SimpleChanges): void {
+  this.swiperInit();
+
+  if(changes['images']?.firstChange){
+      return;
+  }
+
+  if( !this.swiper ) { return; }
+  this.swiper.destroy(true, true);
+
+  const paginationElement = this.swiperDiv().nativeElement.querySelector('.swiper-pagination');
+  if(paginationElement) {
+    paginationElement.innerHTML = '';
+  }
+
+  setTimeout(() => {
+    this.swiperInit();
+  }, 100);
+}
+```
+Se modifica el servicio:
+```
+uploadImages(files?: FileList): Observable<string[]> {
+  if (!files ){ return of([]); }
+
+  const  uploadObservable = Array.from(files).map((imageFile => 
+    this.uploadImage(imageFile)
+  ));
+  
+  return forkJoin(uploadObservable).pipe(
+    tap((imageNames) => console.log('Imágenes subidas', {imageNames}))
+  );
+}
+
+uploadImage(imageFile: File): Observable<string> {
+  const formData = new FormData();
+  formData.append('file', imageFile);
+
+  return this.http.post<{ fileName: string }>(`${baseUrl}/files/product`, formData).pipe(
+    map((response) => response.fileName)
+  );
+}
+```
+Se modifica el product detail para subir las imagenes:
+```
+onFilesChanged(event: Event) {
+  const fileList = (event.target as HTMLInputElement).files;
+  this.imageFileList = fileList? fileList : undefined;
+
+  const imageUrls = Array.from(fileList ?? []).map(file => URL.createObjectURL(file));  
+  console.log('Archivos seleccionados', imageUrls);
+
+  this.tempImages.set(imageUrls);
+}
+```
