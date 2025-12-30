@@ -2245,3 +2245,7 @@ onFilesChanged(event: Event) {
 * Cambiamos en environment.ts (no development) la url del api con la de render: https://nest-back-r6ra.onrender.com/api
 * Crear rama de front y apuntar en netlify: https://app.netlify.com/
   * Importar proyecto existente, se escoge la rama deseada a desplegar
+
+# Angular 19+
+* ng version para asegurar que la versión de angular es por encima de 17
+* ng new proyectoNuevo
