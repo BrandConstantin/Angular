@@ -2232,6 +2232,16 @@ onFilesChanged(event: Event) {
 * Base de datos en Postgres: https://neon.com/
   * Se crea proyecto y luego en apartado Connect se copia la cadena de conexión de tipo ```psql 'postgresql://neondb_owner:npg_XXXXX```
   * Cambiar en el proyecto nest el package.json -> engine -> la versión de node a la más superior
-* Desplegar en producción, en netifly o render: https://render.com/
-  * Escogemos desplegar un web service
-  * 
+* Desplegar en producción con render: https://render.com/
+  * Crear rama de back
+  * Escogemos desplegar un web service -> escogemos el repositorio
+  * Build command: npm intall; npm run build
+  * Start command: npm run start
+  * Environment variable: se copia todo de .env del proyecto cambiando el STAGE a prod, password BBDD copiadas de neon (postgresql://neondb_user:passHasta@),
+    nombre BBDD en la url de neon, host desde @password hasta nombre base datos (.tech/neondb) 
+
+## Desplegar Angular
+* Se añade withHashLocation() en app.config.ts
+* Cambiamos en environment.ts (no development) la url del api con la de render: https://nest-back-r6ra.onrender.com/api
+* Crear rama de front y apuntar en netlify: https://app.netlify.com/
+  * Importar proyecto existente, se escoge la rama deseada a desplegar
