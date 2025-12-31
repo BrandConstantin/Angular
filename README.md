@@ -2249,3 +2249,5 @@ onFilesChanged(event: Event) {
 # Angular 19+
 * ng version para asegurar que la versión de angular es por encima de 17
 * ng new proyectoNuevo
+* Instalar Tailwind CSS: https://tailwindcss.com/docs/installation/framework-guides/angular
+* 
