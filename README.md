@@ -2272,3 +2272,35 @@ onFilesChanged(event: Event) {
     <p>*********</p>
 }
 ```
+
+## @Switch
+```
+@switch(grade()) {
+    @case ('A') {
+        <p>Excepcional!</p>
+    }
+    @case ('B') {
+        <p>Bien!</p>
+    }
+    @default {
+        <p>Deplorable!</p>
+    }
+}
+```
+
+## @for
+```
+<ul>
+@for (framework of frameworks(); track $index; 
+    let i = $index, first = $first, last = $last, even = $even, odd = $odd, count = $count ){
+    <li [class]="{
+        'bg-red-100': even && !first,
+        'bg-green-100': odd && !last
+    }">
+        {{ i + 1 }} {{ framework }}
+    </li>
+} @empty {
+    <p>No hay frameworks agragados</p>
+}
+</ul>
+```
