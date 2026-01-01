@@ -2250,4 +2250,25 @@ onFilesChanged(event: Event) {
 * ng version para asegurar que la versión de angular es por encima de 17
 * ng new proyectoNuevo
 * Instalar Tailwind CSS: https://tailwindcss.com/docs/installation/framework-guides/angular
-* 
+
+## @for
+```
+@for(item of menuItems; track $index){
+    <a [routerLink] = "item.path" routerLinkActive = "bg-blue-800"
+    class="w-full px-2 inline-flex space-x-2 items-center border-b border-slate-700 py-3 hover:bg-white/5 transition ease-linear duration-150">
+        <div class="flex flex-col">
+            <span class="text-lg font-bold leading-5 text-white">{{ item.title }}</span>
+            <span class="text-sm text-white/50 hidden md:block">{{ item.path }}</span>
+        </div>
+    </a>
+}
+```
+
+## @If
+```
+@if(showContent()){
+    <p>Hola Mundo!</p>
+} @else {
+    <p>*********</p>
+}
+```
