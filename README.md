@@ -2363,3 +2363,40 @@ export default class ChangeDetection {
   }
 }
 ```
+
+## Defer Blocks
+```
+@defer(){
+    <app-heavy-loaders-slow cssClass="bg-blue-500"></app-heavy-loaders-slow>
+} @placeholder {
+    <p class="h-[600px] w-full bg-gradient-to-r from-gray-200 to-gray-400 animate-pulse">Cargando .... </p>
+}
+
+.....
+@Component({
+  selector: 'app-heavy-loaders-slow',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <section [ngClass]="['w-full h-[600px]', cssClass]"> View Heavy Loaders Slow Page </section>
+  `
+})
+export class HeavyLoadersSlow { 
+  @Input({required: true}) cssClass!: string;
+
+  constructor(){
+    const start = Date.now();
+    // no se puede hacer nada en la aplicación hasta pasado este tiempo
+    while(Date.now() - start < 3000) {}
+  }
+}
+```
+
+## Defer Triggers
+* on idle - Se dispara cuando el navegador llega a un estado inactivo “idle” 
+* on viewport - Se dispara cuando el bloque entra al punto de vista del usuario. Por defecto se puede conectar el placeholder y otro elemento 
+* on interaction - Se dispara cuando el usuario interactúa con un elemento específico mediante un click o keydown
+* on hover - Se dispara cuando el mouse pasa sobre el elemento o la referencia.
+* on immediate - Se dispara tan pronto el cliente termina de renderizar la pantalla.
+* on timer - Se dispara después de cierta duración de tiempo en MS milliseconds.
+``` @defer(on viewport){ ... } ```
