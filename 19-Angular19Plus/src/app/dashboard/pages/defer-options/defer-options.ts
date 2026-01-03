@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import HeavyLoadersFast from '@shared/heavy-loaders/heavy-loaders-fast';
+import { Title } from '@shared/title/title';
 
 @Component({
   selector: 'app-defer-options',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, HeavyLoadersFast, Title],
   templateUrl: './defer-options.html',
   styles: ``,
 })

@@ -2304,3 +2304,99 @@ onFilesChanged(event: Event) {
 }
 </ul>
 ```
+
+## @Input
+```
+<app-title title="Control Flow" withShadow></app-title>
+
+.....
+@Component({
+  selector: 'app-title',
+  imports: [CommonModule],
+  template: `<h1 class="text-3xl mb-5">{{ title }} {{withShadow}} </h1>`,
+})
+export class Title { 
+  @Input({required: true}) title!: string;
+  @Input({transform: booleanAttribute}) withShadow: boolean = false;
+}
+```
+
+## OnPush
+changeDetection: ChangeDetectionStrategy.Default es el por defecto
+```
+@Component({
+  selector: 'app-change-detection',
+  imports: [CommonModule, Title],
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <app-title [title]="currentFramework()" />
+
+    <pre>{{ frameworkAsSignal() | json }}</pre>
+    <pre>{{ frameworkAsProperty | json }}</pre>
+  `,
+})
+export default class ChangeDetection { 
+  public currentFramework = computed(
+    () => `Change detection - ${ this.frameworkAsSignal().name }`
+  );
+
+  public frameworkAsSignal = signal({
+    name: 'Angular',
+    releaseDate: 2016
+  });
+
+  public frameworkAsProperty = {
+    name: 'Spring Boot 4',
+    releaseDate: 2025
+  }
+
+  constructor(){
+    setTimeout(() => {
+      this.frameworkAsProperty.name = 'React';
+      this.frameworkAsSignal.update( value => ({
+        ...value, name: 'Vue'
+      }));
+
+      console.log("Hecho!");
+    }, 2000);
+  }
+}
+```
+
+## Defer Blocks
+```
+@defer(){
+    <app-heavy-loaders-slow cssClass="bg-blue-500"></app-heavy-loaders-slow>
+} @placeholder {
+    <p class="h-[600px] w-full bg-gradient-to-r from-gray-200 to-gray-400 animate-pulse">Cargando .... </p>
+}
+
+.....
+@Component({
+  selector: 'app-heavy-loaders-slow',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <section [ngClass]="['w-full h-[600px]', cssClass]"> View Heavy Loaders Slow Page </section>
+  `
+})
+export class HeavyLoadersSlow { 
+  @Input({required: true}) cssClass!: string;
+
+  constructor(){
+    const start = Date.now();
+    // no se puede hacer nada en la aplicación hasta pasado este tiempo
+    while(Date.now() - start < 3000) {}
+  }
+}
+```
+
+## Defer Triggers
+* on idle - Se dispara cuando el navegador llega a un estado inactivo “idle” 
+* on viewport - Se dispara cuando el bloque entra al punto de vista del usuario. Por defecto se puede conectar el placeholder y otro elemento 
+* on interaction - Se dispara cuando el usuario interactúa con un elemento específico mediante un click o keydown
+* on hover - Se dispara cuando el mouse pasa sobre el elemento o la referencia.
+* on immediate - Se dispara tan pronto el cliente termina de renderizar la pantalla.
+* on timer - Se dispara después de cierta duración de tiempo en MS milliseconds.
+``` @defer(on viewport){ ... } ```
