@@ -2400,3 +2400,13 @@ export class HeavyLoadersSlow {
 * on immediate - Se dispara tan pronto el cliente termina de renderizar la pantalla.
 * on timer - Se dispara después de cierta duración de tiempo en MS milliseconds.
 ``` @defer(on viewport){ ... } ```
+
+## ViewTransitions
+Modificamos app.config.ts :
+```
+providers: [
+  provideBrowserGlobalErrorListeners(),
+  provideZoneChangeDetection({ eventCoalescing: true }),
+  provideRouter(routes, withViewTransitions())
+]
+```
