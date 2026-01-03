@@ -2410,3 +2410,47 @@ providers: [
   provideRouter(routes, withViewTransitions())
 ]
 ```
+
+## Servicios con señales
+```
+export class UsersService{
+    private http = inject(HttpClient);
+
+    #state = signal<State>({ // # es igual a private pero más estricto
+        loading: true,
+        users: []
+    })
+
+    // al ser privado necesitamos una señal computada
+    public users = computed(() => this.#state().users);
+
+    constructor(){ 
+        this.http.get<UserResponse>('https://reqres.in/api/users')
+        .pipe(delay(1500))
+        .subscribe(
+            res => {
+                this.#state.set({
+                    loading: false,
+                    users: [res.data]
+                })
+            }
+        )
+        console.log("Cargando data ...");
+    }
+}
+
+.....
+export default class Users { 
+  public usersService = inject(UsersService);
+}
+
+.....
+@for(user of usersService.users(); track user.id){
+    <li class="flex items-center my-2">
+        <img [srcset]="user.avatar" [alt]="user.first_name" class="rounded w-14" />
+        <a [routerLink]="['/dashboard/user', user.id]" class="mx-5hover:undeline"> {{ user.first_name }} {{ user.last_name }} </a>
+    </li>
+} @empty {
+    <p>CARGANDO ....</p>
+}
+```
