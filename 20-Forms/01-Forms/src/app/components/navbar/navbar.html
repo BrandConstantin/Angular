@@ -1,0 +1,26 @@
+<div class="navbar">
+    <div class="navbar__logo">
+        <img src="assets\images\logo.png" alt="Logo">
+    </div>
+    <div class="navbar__link-container">
+        <a routerLink="template-forms" routerLinkActive="active">Template Driven Form</a>
+        <a routerLink="reactive-forms" routerLinkActive="active">Reactive Form</a>
+    </div>
+    <div class="navbar__open-menu">
+        <button class="btn btn-tertiary" (click)="toggleNavbarMobile.set(true)">
+            &#x2630;
+        </button>
+    </div>
+</div>
+
+@if(toggleNavbarMobile()){
+    <div class="navbar-mobile" @fadeIn>
+        <div class="navbar-mobile__close-button">
+            <button class="btn btn-tertiary" (click)="toggleNavbarMobile.set(false)">&#10006;</button>
+        </div>
+        <div class="navbar-mobile__link-container">
+        <a routerLink="template-forms" routerLinkActive="active">Template Driven Form</a>
+        <a routerLink="reactive-forms" routerLinkActive="active">Reactive Form</a>
+        </div>
+    </div>
+}
