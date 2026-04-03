@@ -2454,3 +2454,8 @@ export default class Users {
     <p>CARGANDO ....</p>
 }
 ```
+
+
+# Formularios
+Instalamos animaciones de angular con ```npm i @angular/animations```
+
