@@ -1,0 +1,76 @@
+form, .radio-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    row-gap: 16px;
+}
+
+form{
+    width: 100%;
+    max-width: 510px;
+    padding: 20px;
+}
+
+form h2{
+    text-align: center;
+}
+
+.form-control {
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+    width: 100%;
+}
+
+.form-control input[type="text"], select {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #2b2929;
+    border-radius: 4px;
+    outline: none;
+}
+
+.form-control input[type="text"]:focus, select:focus {
+    border-color: #007BFF;
+}   
+
+.form-radio-control {
+    display: flex;
+    align-items: center;
+    column-gap: 8px;
+}
+
+.form-radio-control input[type="radio"] {
+    width: 16px;
+    height: 16px;
+}
+
+.form-radio-control label {
+    cursor: pointer;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    column-gap: 8px;
+}
+
+.btn-secondary{
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 30px;
+}
+
+.btn-primary{
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 30px;
+}
