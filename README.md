@@ -2459,3 +2459,33 @@ export default class Users {
 # Formularios
 Instalamos animaciones de angular con ```npm i @angular/animations```
 
+## NgModel
+Para ver las directivas de un elemento > click sobre Elements > luego en consola escrbimos > ````window.ng.getDirectives($0)```
+
+Funciona solo si tiene también una propiedad
+```
+applicantForm = {
+  firstName: '',
+  lastName: '',
+  email: '',
+  employmentStatus: '',
+  position: '',
+  resumeLink: ''
+};
+
+.....
+
+<input type="text" id="first-name" name="firstName" placeholder="First Name" [(ngModel)]="firstName">
+```
+
+Otra manera sería definir el name como ngModelOptions:
+```
+<input type="text" id="first-name" placeholder="First Name" 
+            [(ngModel)]="applicantForm.firstName" [ngModelOptions]="{name: 'first-name', updateOn: 'blur' }">
+```
+
+Para actualizar todos los input en vez de escribir el updateOn en cada uno se puede añadir para el formulario entero:
+```
+<form autocomplete="off" #form="ngForm" (submit)="handleSubmit(form)" [ngFormOptions]="{ updateOn: 'blur' }">
+```
+
