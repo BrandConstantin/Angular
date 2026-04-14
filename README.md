@@ -2489,3 +2489,45 @@ Para actualizar todos los input en vez de escribir el updateOn en cada uno se pu
 <form autocomplete="off" #form="ngForm" (submit)="handleSubmit(form)" [ngFormOptions]="{ updateOn: 'blur' }">
 ```
 
+Se pueden eliminar todo lo que es first y second name y se reagrupa todo con ngModelGroup:
+```
+  applicantForm = {
+    name: {
+      first: '',
+      last: ''
+    },
+    email: '',
+    employmentStatus: '',
+    position: '',
+    resumeLink: ''
+  };
+  
+.....
+
+<div class="form-group" ngModelGroup="name">
+  <div class="form-control">
+      <label for="last">Last Name:</label>
+      <input type="text" id="last" name="lastName" placeholder="Last" 
+      [(ngModel)]="applicantForm.name.last">
+  </div>
+</div>
+```
+
+Estado de los formularios y sus controles:
+- en directives.ts de ngModule encontramos las directivas
+- allí encontraremos RequiredValidator y MinLengthValidator, usados en el ejemplo
+```
+<input type="text" id="first" placeholder="First" 
+  [(ngModel)]="applicantForm.name.first" [ngModelOptions]="{name: 'first', updateOn: 'blur' }"
+  required minlength="3" #firstNameControl="ngModel">
+
+  @if(firstNameControl.touched && firstNameControl.hasError('required')) {
+      <div class="text-error">First name is required.</div>
+  }
+
+  @if(firstNameControl.touched && firstNameControl.hasError('minlength')) {
+      @let minLengthError = firstNameControl.getError('minlength');
+      <div class="text-error">First name must be at least {{ minLengthError?.requiredLength }} characters long.</div>
+  }
+```
+

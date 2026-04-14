@@ -3,59 +3,110 @@
 
 <form autocomplete="off" #form="ngForm" (submit)="handleSubmit(form)" [ngFormOptions]="{ updateOn: 'blur' }">
     <h2>Job Application</h2>
-    <div class="form-control">
-        <label for="first-name">First Name:</label>
-        <input type="text" id="first-name" placeholder="First Name" 
-            [(ngModel)]="applicantForm.firstName" [ngModelOptions]="{name: 'first-name', updateOn: 'blur' }">
-    </div>
 
-    <div class="form-control">
-        <label for="last-name">Last Name:</label>
-        <input type="text" id="last-name" name="lastName" placeholder="Last Name" [(ngModel)]="applicantForm.lastName">
+    <div class="form-group" ngModelGroup="name">
+        <div class="form-group-box">
+            <div class="form-control">
+                <label for="first">First Name:</label>
+                <input type="text" id="first" placeholder="First" 
+                    [(ngModel)]="applicantForm.name.first" [ngModelOptions]="{name: 'first', updateOn: 'blur' }"
+                    required minlength="3" #firstNameControl="ngModel">
+
+                    @if(firstNameControl.touched && firstNameControl.hasError('required')) {
+                        <div class="text-error">First name is required.</div>
+                    }
+
+                    @if(firstNameControl.touched && firstNameControl.hasError('minlength')) {
+                        @let minLengthError = firstNameControl.getError('minlength');
+                        <div class="text-error">First name must be at least {{ minLengthError?.requiredLength }} characters long.</div>
+                    }
+            </div>
+
+            <div class="form-control">
+                <label for="last">Last Name:</label>
+                <input type="text" id="last" name="lastName" placeholder="Last" 
+                    [(ngModel)]="applicantForm.name.last" required minlength="3" #lastNameControl="ngModel">
+                    @if(lastNameControl.touched && lastNameControl.hasError('required')) {
+                        <div class="text-error">Last name is required.</div>
+                    }
+
+                    @if(lastNameControl.touched && lastNameControl.hasError('minlength')) {
+                        @let minLengthError = lastNameControl.getError('minlength');
+                        <div class="text-error">Last name must be at least {{ minLengthError?.requiredLength }} characters long.</div>
+                    }
+            </div>
+        </div>
     </div>
 
     <div class="form-control">
         <label for="email">Email:</label>
-        <input type="email" id="email" name="email" placeholder="Email" [(ngModel)]="applicantForm.email">
+        <input type="email" id="email" name="email" placeholder="Email" [(ngModel)]="applicantForm.email"
+            required email #emailControl="ngModel">
+        @if(emailControl.touched && emailControl.hasError('required')) {
+            <div class="text-error">Email is required.</div>
+        }
+
+        @if(emailControl.touched && emailControl.hasError('email')) {
+            <div class="text-error">Please enter a valid email like ***&#64;***</div>
+        }
     </div>
 
     <div class="radio-group">
         What your current employment status?
         <div class="form-radio-control">
-            <input type="radio" id="employed" name="employmentStatus" value="employed" [(ngModel)]="applicantForm.employmentStatus">
+            <input type="radio" id="employed" name="employmentStatus" value="employed" 
+                [(ngModel)]="applicantForm.employmentStatus" #employmentStatusControl="ngModel" required>
             <label for="employed">Employed</label>
         </div>
         <div class="form-radio-control">
-            <input type="radio" id="unemployed" name="employmentStatus" value="unemployed" [(ngModel)]="applicantForm.employmentStatus">
+            <input type="radio" id="unemployed" name="employmentStatus" value="unemployed" 
+                [(ngModel)]="applicantForm.employmentStatus" #employmentStatusControl="ngModel" required>
             <label for="unemployed">Unemployed</label>
         </div>
         <div class="form-radio-control">
-            <input type="radio" id="self-employed" name="employmentStatus" value="self-employed" [(ngModel)]="applicantForm.employmentStatus">
+            <input type="radio" id="self-employed" name="employmentStatus" value="self-employed" 
+                [(ngModel)]="applicantForm.employmentStatus" #employmentStatusControl="ngModel" required>
             <label for="self-employed">Self-Employed</label>
         </div>
         <div class="form-radio-control">
-            <input type="radio" id="student" name="employmentStatus" value="student" [(ngModel)]="applicantForm.employmentStatus">
+            <input type="radio" id="student" name="employmentStatus" value="student" 
+                [(ngModel)]="applicantForm.employmentStatus" #employmentStatusControl="ngModel" required>
             <label for="student">Student</label>
         </div>
+        @if(employmentStatusControl.touched && employmentStatusControl.hasError('required')) {
+            <div class="text-error">Please select an employment status.</div>
+        }
     </div>
 
     <div class="form-control">
         <label for="open-position">What position are you applying for?</label>
-        <select id="open-position" [(ngModel)]="applicantForm.position" name="open-position">
+        <select id="open-position" [(ngModel)]="applicantForm.position" name="open-position" required #positionControl="ngModel">
+            <option value="">Select a position</option>
             <option value="frontend-developer">Frontend Developer</option>
             <option value="backend-developer">Backend Developer</option>
             <option value="fullstack-developer">Fullstack Developer</option>
             <option value="designer">Designer</option>
         </select>
+        @if(positionControl.touched && positionControl.hasError('required')) {
+            <div class="text-error">Please select a position.</div>
+        }
     </div>
 
     <div class="form-control">
         <label for="resume-link">Resume Link:</label>
-        <input type="url" id="resume-link" name="resumeLink" placeholder="Resume Link" [(ngModel)]="applicantForm.resumeLink">
+        <input type="url" id="resume-link" name="resumeLink" placeholder="Resume Link" 
+            [(ngModel)]="applicantForm.resumeLink" required pattern="https?://.+" #resumeLinkControl="ngModel">
+        
+        @if(resumeLinkControl.touched && resumeLinkControl.hasError('required')) {
+            <div class="text-error">Resume link is required.</div>
+        }
+        @if(resumeLinkControl.touched && resumeLinkControl.hasError('pattern')) {
+            <div class="text-error">Please enter a valid URL starting with http:// or https://.</div>
+        }
     </div>
 
     <div class="form-action">
         <button class="btn btn-secondary" type="submit">Reset Application</button>
-        <button class="btn btn-primary" type="submit">Submit Application</button>
+        <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Submit Application</button>
     </div>
 </form>

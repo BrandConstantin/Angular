@@ -1,4 +1,4 @@
-form, .radio-group {
+form, .form-group, .radio-group {
     display: flex;
     flex-direction: column;
     margin-bottom: 20px;
@@ -15,6 +15,11 @@ form h2{
     text-align: center;
 }
 
+.form-group-box{
+    display: flex;
+    row-gap: 8px;
+}
+
 .form-control {
     display: flex;
     flex-direction: column;
@@ -22,7 +27,7 @@ form h2{
     width: 100%;
 }
 
-.form-control input[type="text"], select {
+.form-control input[type="text"], input[type="email"], input[type="url"], select {
     padding: 8px;
     font-size: 16px;
     border: 1px solid #2b2929;
@@ -30,9 +35,19 @@ form h2{
     outline: none;
 }
 
-.form-control input[type="text"]:focus, select:focus {
+.form-control input[type="text"].ng-valid.ng-dirty, input[type="email"].ng-valid.ng-dirty, input[type="url"].ng-valid.ng-dirty, select.ng-valid.ng-dirty {
+    border-color: green;
+}
+
+.form-control input[type="text"]:focus, input[type="email"]:focus, input[type="url"]:focus, select:focus {
     border-color: #007BFF;
 }   
+
+.text-error{
+    color: red;
+    border: #2b2929 1px solid;
+    font-size: 14px;
+}
 
 .form-radio-control {
     display: flex;
@@ -73,4 +88,14 @@ form h2{
     border-radius: 4px;
     cursor: pointer;
     margin: 30px;
+}
+
+.btn-primary:hover {
+    color: #070707;
+}
+
+.btn-primary:disabled {
+    background-color: #007BFF;
+    opacity: 0.5;
+    cursor: not-allowed;
 }
