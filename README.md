@@ -2513,6 +2513,7 @@ Se pueden eliminar todo lo que es first y second name y se reagrupa todo con ngM
 </div>
 ```
 
+## Validar inputs
 Estado de los formularios y sus controles:
 - en directives.ts de ngModule encontramos las directivas
 - allí encontraremos RequiredValidator y MinLengthValidator, usados en el ejemplo
@@ -2531,3 +2532,39 @@ Estado de los formularios y sus controles:
   }
 ```
 
+## Validadores Personalizados
+Se crea una nueva directiva:
+```
+import { Directive, input, InputSignal } from "@angular/core";
+import { AbstractControl, NG_VALIDATORS, ValidationErrors, Validator } from "@angular/forms";
+
+@Directive({
+    selector: '[personalizateDirective]',
+    providers: [
+        // REGISTRAR NUESTRA DIRECTIVA COMO UN VALIDADOR PERSONALIZADO
+        {provide: NG_VALIDATORS, useExisting: PersonalizateDirective, multi: true}
+    ]
+})
+
+export class PersonalizateDirective implements Validator{
+    personalizateDirective: InputSignal<string | string[]> = input.required<string | string[]>();
+
+    validate(control: AbstractControl<string>): ValidationErrors | null {
+        const bannedWords: string[] = Array.isArray(this.personalizateDirective()) 
+            ? this.personalizateDirective() as string[] 
+            : [this.personalizateDirective() as string];
+
+        const controlValue = control.value?.toLowerCase();
+        const foundBannedWord = bannedWords.find(bannedWord => controlValue?.startsWith(bannedWord.toLowerCase()));
+
+        return foundBannedWord ? { bannedWordValidator: foundBannedWord } : null;
+    }
+}
+```
+
+Se implementa en el html:
+```
+<input type="text" id="last" name="lastName" placeholder="Last" 
+    [(ngModel)]="applicantForm.name.last" required minlength="3" #lastNameControl="ngModel"
+    [personalizateDirective]="[ 'admin', 'root', 'superuser' ]">
+```
