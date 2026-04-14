@@ -2,10 +2,11 @@ import { JsonPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ApplicantForm } from './interfaces/applicant-form.directive';
+import { PersonalizateDirective } from './directives/personalizate.directive';
 
 @Component({
   selector: 'app-template-forms',
-  imports: [FormsModule, JsonPipe],
+  imports: [FormsModule, JsonPipe, PersonalizateDirective],
   templateUrl: './template-forms.html',
   styleUrl: './template-forms.css',
 })

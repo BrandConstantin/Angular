@@ -25,7 +25,9 @@
             <div class="form-control">
                 <label for="last">Last Name:</label>
                 <input type="text" id="last" name="lastName" placeholder="Last" 
-                    [(ngModel)]="applicantForm.name.last" required minlength="3" #lastNameControl="ngModel">
+                    [(ngModel)]="applicantForm.name.last" required minlength="3" #lastNameControl="ngModel"
+                    [personalizateDirective]="[ 'admin', 'root', 'superuser' ]">
+
                     @if(lastNameControl.touched && lastNameControl.hasError('required')) {
                         <div class="text-error">Last name is required.</div>
                     }
@@ -33,6 +35,11 @@
                     @if(lastNameControl.touched && lastNameControl.hasError('minlength')) {
                         @let minLengthError = lastNameControl.getError('minlength');
                         <div class="text-error">Last name must be at least {{ minLengthError?.requiredLength }} characters long.</div>
+                    }
+
+                    @if(lastNameControl.touched && lastNameControl.hasError('bannedWordValidator')) {
+                        @let bannedWordError = lastNameControl.getError('bannedWordValidator');
+                        <div class="text-error">Last name can't include "{{ bannedWordError }}" word.</div>
                     }
             </div>
         </div>
