@@ -2568,3 +2568,69 @@ Se implementa en el html:
     [(ngModel)]="applicantForm.name.last" required minlength="3" #lastNameControl="ngModel"
     [personalizateDirective]="[ 'admin', 'root', 'superuser' ]">
 ```
+
+## Campos aislados y campos dinámicos
+Los campos aislados se obtienen con standalone = true en este ejmplo para aislar parte del formulario:
+```
+<div class="radio-group">
+    Verify Account with:
+    <div class="form-radio-control">
+        <label for="email-verification">Email</label>
+        <input type="radio" id="email-verification" name="verificationMethod" value="email" 
+            [(ngModel)]="verifyAccountWithMethod" [ngModelOptions]="{standalone: true}">
+    </div>
+    <div class="form-radio-control">
+        <label for="phone-verification">Phone</label>
+        <input type="radio" id="phone-verification" name="verificationMethod" value="phone" 
+            [(ngModel)]="verifyAccountWithMethod" [ngModelOptions]="{standalone: true}" 
+            (ngModelChange)="handlePhoneNumberInput()">
+    </div>
+</div>
+
+@if(verifyAccountWithMethod === 'phone') {
+<div class="form-control">
+    <label for="phone-number">Phone Number:</label>
+    <input type="tel" id="phone-number" name="phoneNumber" placeholder="Phone Number" 
+        [(ngModel)]="applicantForm.phoneNumber" required minlength="9" maxlength="15" 
+        pattern="\d*" #phoneNumberControl="ngModel" (keypress)="allowOnlyNumbers($event)">
+    
+    @if(phoneNumberControl.touched && phoneNumberControl.hasError('required')) {
+        <div class="text-error">Phone number is required.</div>
+    }
+    @if(phoneNumberControl.touched && phoneNumberControl.hasError('minlength')) {
+        <div class="text-error">Phone number must be at least 9 characters long.</div>
+    }
+</div>    
+}
+
+.....
+
+verifyAccountWithMethod: VerifyAccount = 'email';
+
+applicantForm: ApplicantForm = {
+  name: {
+    first: '',
+    last: ''
+  },
+  email: '',
+  employmentStatus: '',
+  position: '',
+  resumeLink: '',
+  phoneNumber: ''
+};
+
+
+handleSubmit(form: NgForm) {
+  console.log('Form submitted', form);
+}
+
+allowOnlyNumbers(event: KeyboardEvent) {
+  if (!RegExp(/^\d$/).exec(event.key)) {
+    event.preventDefault();
+  }
+}
+
+handlePhoneNumberInput() {
+  this.applicantForm.phoneNumber = '';
+}
+```
