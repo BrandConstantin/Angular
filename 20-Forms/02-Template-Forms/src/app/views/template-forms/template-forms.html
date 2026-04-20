@@ -45,18 +45,37 @@
         </div>
     </div>
 
-    <div class="form-control">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" placeholder="Email" [(ngModel)]="applicantForm.email"
-            required email #emailControl="ngModel">
-        @if(emailControl.touched && emailControl.hasError('required')) {
-            <div class="text-error">Email is required.</div>
-        }
+    <div class="form-group">
+        <div class="form-group-box" ngModelGroup="email">
+            <div class="form-control">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Email" [(ngModel)]="applicantForm.email.email"
+                    required email #emailControl="ngModel" confirmEmail>
+                @if(emailControl.touched && emailControl.hasError('required')) {
+                    <div class="text-error">Email is required.</div>
+                }
 
-        @if(emailControl.touched && emailControl.hasError('email')) {
-            <div class="text-error">Please enter a valid email like ***&#64;***</div>
-        }
+                @if(emailControl.touched && emailControl.hasError('email')) {
+                    <div class="text-error">Please enter a valid email like ***&#64;***</div>
+                }
+            </div>
+
+            <div class="form-control">
+                <label for="confirm-email">Confirm Email:</label>
+                <input type="email" id="confirm-email" name="confirmEmail" placeholder="Confirm Email" [(ngModel)]="applicantForm.email.confirmEmail"
+                    email #confirmEmailControl="ngModel">
+                @if(confirmEmailControl.touched && confirmEmailControl.hasError('required')) {
+                    <div class="text-error">Please confirm your email.</div>
+                }
+
+                @if(confirmEmailControl.touched && confirmEmailControl.hasError('email')) {
+                    <div class="text-error">Please enter a valid email like ***&#64;***</div>
+                }
+            </div>
+        </div>
     </div>
+
+
 
     <div class="radio-group">
         What your current employment status?
