@@ -4,10 +4,11 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { ApplicantForm, VerifyAccount } from './interfaces/applicant-form.directive';
 import { PersonalizateDirective } from './directives/personalizate.directive';
 import { ConfirmEmailDirective } from './directives/confirm-email.directive';
+import { CheckEmailDirective } from './directives/check-email.directive';
 
 @Component({
   selector: 'app-template-forms',
-  imports: [FormsModule, JsonPipe, PersonalizateDirective, ConfirmEmailDirective],
+  imports: [FormsModule, JsonPipe, PersonalizateDirective, ConfirmEmailDirective, CheckEmailDirective],
   templateUrl: './template-forms.html',
   styleUrl: './template-forms.css',
 })
