@@ -11,9 +11,12 @@ import { AbstractControl, NG_VALIDATORS, ValidationErrors, Validator } from "@an
 })
 export class ConfirmEmailDirective implements Validator {
     validate(formGroup: AbstractControl): ValidationErrors | null {
-        const email = formGroup.get('email');
-        const confirmEmail = formGroup.get('confirmEmail')?.value;
+        const emailControl = formGroup.get('email');
+        const confirmEmailControl = formGroup.get('confirm-email')?.value;
 
-        return email?.value === confirmEmail?.value ? null : { noMatch: true };
+        const error: ValidationErrors | null = emailControl?.value === confirmEmailControl ? null : { noMatch: true };
+        formGroup.get('confirm-email')?.setErrors(error);
+
+        return error;
     }
 }

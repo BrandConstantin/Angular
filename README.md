@@ -2634,3 +2634,107 @@ handlePhoneNumberInput() {
   this.applicantForm.phoneNumber = '';
 }
 ```
+
+## Async Validator
+```
+<div class="form-group">
+    <div class="form-group-box" ngModelGroup="email" confirmEmail>
+        <div class="form-control">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Email" [(ngModel)]="applicantForm.email.email"
+                required email #emailControl="ngModel" checkEmail>
+            @if(emailControl.touched && emailControl.hasError('required')) {
+                <div class="text-error">Email is required.</div>
+            }
+
+            @if(emailControl.dirty && emailControl.hasError('email')) {
+                <div class="text-error">Please enter a valid email like ***&#64;***</div>
+            }
+            
+            @if(emailControl.dirty && emailControl.hasError('emailExists')) {
+                <div class="text-error">This email is already in use.</div>
+            }
+            
+            @if(emailControl.pending){
+                <div class="text-info">Checking email availability...</div>
+            }
+        </div>
+
+        <div class="form-control">
+            <label for="confirm-email">Confirm Email:</label>
+            <input type="email" id="confirm-email" name="confirm-email" placeholder="Confirm Email" [(ngModel)]="applicantForm.email.confirmEmail"
+                #confirmEmailControl="ngModel">
+            @if(confirmEmailControl.touched && confirmEmailControl.hasError('required')) {
+                <div class="text-error">Please confirm your email.</div>
+            }
+
+            @if(confirmEmailControl.touched && confirmEmailControl.hasError('email')) {
+                <div class="text-error">Please enter a valid email like ***&#64;***</div>
+            }
+
+            @if(confirmEmailControl.dirty && confirmEmailControl.hasError('noMatch')) {
+                <div class="text-error">Email and confirm email do not match.</div>
+            }
+        </div>
+    </div>
+</div>
+
+.....
+@Directive({
+    selector: '[confirmEmail]',
+    providers: [{
+        provide: NG_VALIDATORS,
+        useExisting: ConfirmEmailDirective,
+        multi: true
+    }]
+})
+export class ConfirmEmailDirective implements Validator {
+    validate(formGroup: AbstractControl): ValidationErrors | null {
+        const emailControl = formGroup.get('email');
+        const confirmEmailControl = formGroup.get('confirm-email')?.value;
+
+        const error: ValidationErrors | null = emailControl?.value === confirmEmailControl ? null : { noMatch: true };
+        formGroup.get('confirm-email')?.setErrors(error);
+
+        return error;
+    }
+}
+
+.....
+@Injectable({
+    providedIn: 'root'
+})
+export class GetEmailService {
+    private _http = inject(HttpClient);
+    
+    getEmail(): Observable<string[]> {
+        return this._http.get<string[]>('assets/json/email-data.json').pipe(
+            delay(2000)
+        );
+    }
+}
+
+.....
+@Directive({
+    selector: '[checkEmail]',
+    providers: [
+        {
+            provide: NG_ASYNC_VALIDATORS,
+            useExisting: CheckEmailDirective,
+            multi: true
+        }
+    ]
+})
+export class CheckEmailDirective implements AsyncValidator {
+    private _getEmailService = inject(GetEmailService);
+
+    validate(control: AbstractControl): Observable<ValidationErrors | null> {
+        return this._getEmailService.getEmail().pipe(
+            tap(console.log),
+            map((emails: string[]) => {
+                return emails.includes(control?.value) ? { emailExists: true } : null;
+            })
+        );
+    }
+}
+```

@@ -46,30 +46,42 @@
     </div>
 
     <div class="form-group">
-        <div class="form-group-box" ngModelGroup="email">
+        <div class="form-group-box" ngModelGroup="email" confirmEmail>
             <div class="form-control">
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" placeholder="Email" [(ngModel)]="applicantForm.email.email"
-                    required email #emailControl="ngModel" confirmEmail>
+                    required email #emailControl="ngModel" checkEmail>
                 @if(emailControl.touched && emailControl.hasError('required')) {
                     <div class="text-error">Email is required.</div>
                 }
 
-                @if(emailControl.touched && emailControl.hasError('email')) {
+                @if(emailControl.dirty && emailControl.hasError('email')) {
                     <div class="text-error">Please enter a valid email like ***&#64;***</div>
+                }
+                
+                @if(emailControl.dirty && emailControl.hasError('emailExists')) {
+                    <div class="text-error">This email is already in use.</div>
+                }
+                
+                @if(emailControl.pending){
+                    <div class="text-info">Checking email availability...</div>
                 }
             </div>
 
             <div class="form-control">
                 <label for="confirm-email">Confirm Email:</label>
-                <input type="email" id="confirm-email" name="confirmEmail" placeholder="Confirm Email" [(ngModel)]="applicantForm.email.confirmEmail"
-                    email #confirmEmailControl="ngModel">
+                <input type="email" id="confirm-email" name="confirm-email" placeholder="Confirm Email" [(ngModel)]="applicantForm.email.confirmEmail"
+                    #confirmEmailControl="ngModel">
                 @if(confirmEmailControl.touched && confirmEmailControl.hasError('required')) {
                     <div class="text-error">Please confirm your email.</div>
                 }
 
                 @if(confirmEmailControl.touched && confirmEmailControl.hasError('email')) {
                     <div class="text-error">Please enter a valid email like ***&#64;***</div>
+                }
+
+                @if(confirmEmailControl.dirty && confirmEmailControl.hasError('noMatch')) {
+                    <div class="text-error">Email and confirm email do not match.</div>
                 }
             </div>
         </div>
