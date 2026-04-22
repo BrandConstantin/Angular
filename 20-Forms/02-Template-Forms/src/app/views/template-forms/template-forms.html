@@ -1,7 +1,7 @@
 
 <pre>{{ applicantForm | json }}</pre>
 
-<form autocomplete="off" #form="ngForm" (submit)="handleSubmit(form)" [ngFormOptions]="{ updateOn: 'blur' }">
+<form autocomplete="off" #form="ngForm" (ngSubmit)="handleSubmit()" (reset)="handleReset($event)" [ngFormOptions]="{ updateOn: 'blur' }">
     <h2>Job Application</h2>
 
     <div class="form-group" ngModelGroup="name">
@@ -12,11 +12,11 @@
                     [(ngModel)]="applicantForm.name.first" [ngModelOptions]="{name: 'first', updateOn: 'blur' }"
                     required minlength="3" #firstNameControl="ngModel">
 
-                    @if(firstNameControl.touched && firstNameControl.hasError('required')) {
+                    @if(firstNameControl.dirty && firstNameControl.hasError('required')) {
                         <div class="text-error">First name is required.</div>
                     }
 
-                    @if(firstNameControl.touched && firstNameControl.hasError('minlength')) {
+                    @if(firstNameControl.dirty && firstNameControl.hasError('minlength')) {
                         @let minLengthError = firstNameControl.getError('minlength');
                         <div class="text-error">First name must be at least {{ minLengthError?.requiredLength }} characters long.</div>
                     }
@@ -28,16 +28,16 @@
                     [(ngModel)]="applicantForm.name.last" required minlength="3" #lastNameControl="ngModel"
                     [personalizateDirective]="[ 'admin', 'root', 'superuser' ]">
 
-                    @if(lastNameControl.touched && lastNameControl.hasError('required')) {
+                    @if(lastNameControl.dirty && lastNameControl.hasError('required')) {
                         <div class="text-error">Last name is required.</div>
                     }
 
-                    @if(lastNameControl.touched && lastNameControl.hasError('minlength')) {
+                    @if(lastNameControl.dirty && lastNameControl.hasError('minlength')) {
                         @let minLengthError = lastNameControl.getError('minlength');
                         <div class="text-error">Last name must be at least {{ minLengthError?.requiredLength }} characters long.</div>
                     }
 
-                    @if(lastNameControl.touched && lastNameControl.hasError('bannedWordValidator')) {
+                    @if(lastNameControl.dirty && lastNameControl.hasError('bannedWordValidator')) {
                         @let bannedWordError = lastNameControl.getError('bannedWordValidator');
                         <div class="text-error">Last name can't include "{{ bannedWordError }}" word.</div>
                     }
@@ -51,7 +51,7 @@
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" placeholder="Email" [(ngModel)]="applicantForm.email.email"
                     required email #emailControl="ngModel" checkEmail>
-                @if(emailControl.touched && emailControl.hasError('required')) {
+                @if(emailControl.dirty && emailControl.hasError('required')) {
                     <div class="text-error">Email is required.</div>
                 }
 
@@ -72,12 +72,16 @@
                 <label for="confirm-email">Confirm Email:</label>
                 <input type="email" id="confirm-email" name="confirm-email" placeholder="Confirm Email" [(ngModel)]="applicantForm.email.confirmEmail"
                     #confirmEmailControl="ngModel">
-                @if(confirmEmailControl.touched && confirmEmailControl.hasError('required')) {
+                @if(confirmEmailControl.dirty && confirmEmailControl.hasError('required')) {
                     <div class="text-error">Please confirm your email.</div>
                 }
 
-                @if(confirmEmailControl.touched && confirmEmailControl.hasError('email')) {
+                @if(confirmEmailControl.dirty && confirmEmailControl.hasError('email')) {
                     <div class="text-error">Please enter a valid email like ***&#64;***</div>
+                }
+
+                @if(emailControl.dirty && emailControl.hasError('required')){
+                    <div class="text-error">Email is required.</div>
                 }
 
                 @if(confirmEmailControl.dirty && confirmEmailControl.hasError('noMatch')) {
@@ -111,7 +115,7 @@
                 [(ngModel)]="applicantForm.employmentStatus" #employmentStatusControl="ngModel" required>
             <label for="student">Student</label>
         </div>
-        @if(employmentStatusControl.touched && employmentStatusControl.hasError('required')) {
+        @if(employmentStatusControl.dirty && employmentStatusControl.hasError('required')) {
             <div class="text-error">Please select an employment status.</div>
         }
     </div>
@@ -125,7 +129,7 @@
             <option value="fullstack-developer">Fullstack Developer</option>
             <option value="designer">Designer</option>
         </select>
-        @if(positionControl.touched && positionControl.hasError('required')) {
+        @if(positionControl.dirty && positionControl.hasError('required')) {
             <div class="text-error">Please select a position.</div>
         }
     </div>
@@ -135,10 +139,10 @@
         <input type="url" id="resume-link" name="resumeLink" placeholder="Resume Link" 
             [(ngModel)]="applicantForm.resumeLink" required pattern="https?://.+" #resumeLinkControl="ngModel">
         
-        @if(resumeLinkControl.touched && resumeLinkControl.hasError('required')) {
+        @if(resumeLinkControl.dirty && resumeLinkControl.hasError('required')) {
             <div class="text-error">Resume link is required.</div>
         }
-        @if(resumeLinkControl.touched && resumeLinkControl.hasError('pattern')) {
+        @if(resumeLinkControl.dirty && resumeLinkControl.hasError('pattern')) {
             <div class="text-error">Please enter a valid URL starting with http:// or https://.</div>
         }
     </div>
@@ -165,17 +169,19 @@
             [(ngModel)]="applicantForm.phoneNumber" required minlength="9" maxlength="15" 
             pattern="\d*" #phoneNumberControl="ngModel" (keypress)="allowOnlyNumbers($event)">
         
-        @if(phoneNumberControl.touched && phoneNumberControl.hasError('required')) {
+        @if(phoneNumberControl.dirty && phoneNumberControl.hasError('required')) {
             <div class="text-error">Phone number is required.</div>
         }
-        @if(phoneNumberControl.touched && phoneNumberControl.hasError('minlength')) {
+        @if(phoneNumberControl.dirty && phoneNumberControl.hasError('minlength')) {
             <div class="text-error">Phone number must be at least 9 characters long.</div>
         }
     </div>    
     }
 
     <div class="form-action">
-        <button class="btn btn-secondary" type="submit">Reset Application</button>
-        <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Submit Application</button>
+        <button class="btn btn-secondary" type="reset">Reset Application</button>
+        <button class="btn btn-primary" type="submit" 
+
+        >Submit Application</button>
     </div>
 </form>
