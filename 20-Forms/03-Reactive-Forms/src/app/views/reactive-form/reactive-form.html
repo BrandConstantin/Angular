@@ -1,0 +1,101 @@
+<pre>{{form.value | json}}</pre>
+
+<form autocomplete="off" [formGroup]="form">
+    <h2>Job Application Form</h2>
+    <div class="form-group">
+        <h4>Personal Information</h4>
+        <div class="form-group-box" formGroupName="personalInfo">
+            <div class="form-control">
+                <label for="first-name">First Name</label>
+                <input 
+                    type="text"
+                    id="first-name"
+                    placeholder="First Name"
+                    formControlName="firstName"
+                >
+            </div>
+            <div class="form-control">
+                <label for="last-name">Last Name</label>
+                <input 
+                    type="text"
+                    id="last-name"
+                    placeholder="Last Name"
+                    formControlName="lastName"
+                >
+            </div>
+        </div>
+    </div>
+    <div class="form-control">
+        <label for="email">Email</label>
+        <input
+            type="email"
+            id="email"
+            placeholder="jhon.doe@gmail.com"
+            formControlName="email"
+        >
+    </div>
+
+    <div class="radio-group">
+        What is your current employment status?
+        <div class="form-radio-control">
+            <input
+                type="radio"
+                id="employee"
+                formControlName="employmentStatus"
+            >
+            <label for="employee">Employee</label>
+        </div>
+        <div class="form-radio-control">
+            <input
+                type="radio"
+                id="unemployee"
+                formControlName="employmentStatus"
+            >
+            <label for="unemployee">Unemployee</label>
+        </div>
+        <div class="form-radio-control">
+            <input
+                type="radio"
+                id="self-employeed"
+                formControlName="employmentStatus"
+            >
+            <label for="self-employeed">Self-Employeed</label>
+        </div>
+        <div class="form-radio-control">
+            <input
+                type="radio"
+                id="student"
+                formControlName="employmentStatus"
+            >
+            <label for="student">Student</label>
+        </div>
+    </div>
+    <div class="form-control">
+        <label for="open-positions">What position are you applying for?</label>
+        <select
+            id="open-positions"
+            formControlName="position"
+        >
+            <option value="">Select an option</option>
+            <option value="Angular Developer">Angular Developer</option>
+            <option value="PHP Developer">PHP Developer</option>
+            <option value="Java Developer">Java Developer</option>
+            <option value="Python Developer">Python Developer</option>
+        </select>
+    </div>
+
+    <div class="form-control">
+        <label for="resume-link">Please provide your resume link</label>
+        <input
+            type="text"
+            id="resume-link"
+            placeholder="www.example.com"
+            formControlName="resumeLink"
+        >
+    </div>
+
+    <div class="form-actions">
+        <button class="btn btn-secondary">Reset</button>
+        <button class="btn btn-primary">Submit</button>
+    </div>
+</form>
