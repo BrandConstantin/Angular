@@ -94,6 +94,37 @@
         >
     </div>
 
+    <div class="form-group">
+        <h4>References</h4>
+        <div class="form-group-box box-column" formArrayName="references">
+            <button class="btn btn-primary" (click)="addReference()">Add Reference</button>
+            <!-- <div class="form-control" *ngFor="let ref of form.get('references')?.controls; let i = index"> -->
+            @for(reference of form.controls.references.controls; track reference; let i = $index) {
+                <div class="form-control-box" [formGroupName]="i">
+                    <div class="form-control">
+                        <label for="name-{{i}}">Reference Name </label>
+                        <input
+                        type="text"
+                        id="name-{{i}}"
+                        placeholder="Name"
+                        formControlName="name"
+                        >
+                    </div>
+                    <div class="form-control">
+                        <label for="description-{{i}}">Reference Description {{i + 1}}</label>
+                        <input
+                        type="text"
+                        id="description-{{i}}"
+                        placeholder="Reference Details"
+                        formControlName="description"
+                        >
+                    </div>
+                    <button class="btn btn-error" (click)="removeReference(i)">Remove</button>
+                </div>
+            }
+        </div>
+    </div>
+
     <div class="form-actions">
         <button class="btn btn-secondary">Reset</button>
         <button class="btn btn-primary">Submit</button>
