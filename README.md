@@ -2456,7 +2456,7 @@ export default class Users {
 ```
 
 
-# Formularios
+# Template Forms
 Instalamos animaciones de angular con ```npm i @angular/animations```
 
 ## NgModel
@@ -2737,4 +2737,92 @@ export class CheckEmailDirective implements AsyncValidator {
         );
     }
 }
+```
+
+# Reactive Forms 
+```
+<div class="form-group-box" formGroupName="personalInfo">
+    <div class="form-control">
+        <label for="first-name">First Name</label>
+        <input 
+            type="text"
+            id="first-name"
+            placeholder="First Name"
+            formControlName="firstName"
+        >
+    </div>
+</div>
+
+.....
+form = new FormGroup({
+  personalInfo: new FormGroup({
+    firstName: new FormControl(''),
+    lastName: new FormControl(''),
+  }),
+  email: new FormControl(''),
+  employmentStatus: new FormControl(''),
+  position: new FormControl(''),
+  resumeLink: new FormControl(''),
+});
+```
+
+## Form Array
+```
+<div class="form-group-box box-column" formArrayName="references">
+    <button class="btn btn-primary" (click)="addReference()">Add Reference</button>
+    <!-- <div class="form-control" *ngFor="let ref of form.get('references')?.controls; let i = index"> -->
+    @for(reference of form.controls.references.controls; track reference; let i = $index) {
+        <div class="form-control-box" [formGroupName]="i">
+            <div class="form-control">
+                <label for="name-{{i}}">Reference Name </label>
+                <input
+                type="text"
+                id="name-{{i}}"
+                placeholder="Name"
+                formControlName="name"
+                >
+            </div>
+            <div class="form-control">
+                <label for="description-{{i}}">Reference Description {{i + 1}}</label>
+                <input
+                type="text"
+                id="description-{{i}}"
+                placeholder="Reference Details"
+                formControlName="description"
+                >
+            </div>
+            <button class="btn btn-error" (click)="removeReference(i)">Remove</button>
+        </div>
+    }
+</div>
+
+.....
+export class ReactiveForm {
+  form = new FormGroup({
+    personalInfo: new FormGroup({
+      firstName: new FormControl(''),
+      lastName: new FormControl(''),
+    }),
+    email: new FormControl(''),
+    employmentStatus: new FormControl(''),
+    position: new FormControl(''),
+    resumeLink: new FormControl(''),
+    references: new FormArray([
+      new FormGroup({
+        name: new FormControl(''),
+        description: new FormControl(''),
+      }),
+    ]),
+  });
+
+  addReference() {
+    this.form.controls.references.push(new FormGroup({
+      name: new FormControl(''),
+      description: new FormControl(''),
+    }));
+  }
+
+  removeReference(index: number) {
+    this.form.controls.references.removeAt(index);
+  }
 ```
