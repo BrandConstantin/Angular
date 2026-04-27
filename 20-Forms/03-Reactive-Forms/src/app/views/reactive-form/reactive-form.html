@@ -1,6 +1,6 @@
 <pre>{{form.value | json}}</pre>
 
-<form autocomplete="off" [formGroup]="form">
+<form autocomplete="off" [formGroup]="form" #ngForm="ngForm" (ngSubmit)="onSubmit()" (reset)="handleReset($event, ngForm)">
     <h2>Job Application Form</h2>
     <div class="form-group">
         <h4>Personal Information</h4>

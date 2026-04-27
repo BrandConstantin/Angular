@@ -1,6 +1,6 @@
 import { JsonPipe } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-reactive-form',
@@ -35,5 +35,15 @@ export class ReactiveForm {
 
   removeReference(index: number) {
     this.form.controls.references.removeAt(index);
+  }
+
+  onSubmit() {
+    console.log(this.form);
+  }
+
+  handleReset(event: Event, groupDirective: FormGroupDirective) {
+    event.preventDefault();
+    // this.form.reset();
+    console.log('Form reset ', groupDirective);
   }
 }

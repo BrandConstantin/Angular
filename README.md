@@ -2826,3 +2826,18 @@ export class ReactiveForm {
     this.form.controls.references.removeAt(index);
   }
 ```
+
+## ngSubmit y reset
+```
+<form autocomplete="off" [formGroup]="form" #ngForm="ngForm" (ngSubmit)="onSubmit()" (reset)="handleReset($event, ngForm)">
+.....
+onSubmit() {
+  console.log(this.form);
+}
+
+handleReset(event: Event, groupDirective: FormGroupDirective) {
+  event.preventDefault();
+  // this.form.reset();
+  console.log('Form reset ', groupDirective);
+}
+```
