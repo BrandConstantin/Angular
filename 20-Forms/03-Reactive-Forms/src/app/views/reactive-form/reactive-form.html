@@ -84,6 +84,21 @@
         </select>
     </div>
 
+    <div class="checkbox-group" formGroupName="additionalSkills"></div>
+    <h4>Additional Skills</h4>
+    @for(skill of additionalSkills(); track skill) {
+        <div class="form-checkbox-control">
+            <input
+                type="checkbox"
+                [id]="skill"
+                [formControlName]="skill"
+            >
+            <label [for]="skill">{{skill}}</label>
+        </div>
+    } @empty {
+        <p>Loading additional skills...</p>
+    }   
+
     <div class="form-control">
         <label for="resume-link">Please provide your resume link</label>
         <input

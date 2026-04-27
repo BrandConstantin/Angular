@@ -2841,3 +2841,43 @@ handleReset(event: Event, groupDirective: FormGroupDirective) {
   console.log('Form reset ', groupDirective);
 }
 ```
+
+## nonNullable
+Indicar un valor por defecto: ```employmentStatus: new FormControl('employee', { nonNullable: true }),```
+
+## FormRecord y campos dinamicos
+```
+<div class="checkbox-group" formGroupName="additionalSkills"></div>
+<h4>Additional Skills</h4>
+@for(skill of additionalSkills(); track skill) {
+    <div class="form-checkbox-control">
+        <input
+            type="checkbox"
+            [id]="skill"
+            [formControlName]="skill"
+        >
+        <label [for]="skill">{{skill}}</label>
+    </div>
+} @empty {
+    <p>Loading additional skills...</p>
+} 
+
+.....
+...
+position: new FormControl(''),
+additionalSkills: new FormRecord<FormControl<boolean>>({}),
+resumeLink: new FormControl(''),
+...
+
+additionalSkillsService = inject(GetAditionalService);
+
+additionalSkills = toSignal(
+  this.additionalSkillsService.getAditionalSkills()
+    .pipe(tap((additionalSkills: string[]) => {
+      additionalSkills.forEach((skill) => {
+        this.form.controls.additionalSkills.addControl(skill, new FormControl(true, { nonNullable: true }));
+      });
+    })
+  )
+);
+```
