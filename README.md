@@ -2889,3 +2889,49 @@ constructor() {
   }, 2000);
 }
 ```
+
+## FormBuilder
+Se cambian todo a FormBuilder
+```
+form = new FormGroup({
+  personalInfo: new FormGroup({
+    firstName: new FormControl(''),
+    lastName: new FormControl(''),
+  }),
+  email: new FormControl(''),
+  employmentStatus: new FormControl('employee', { nonNullable: true }),
+  position: new FormControl(''),
+  //additionalSkills: new FormGroup<{[key: string]: FormControl<boolean>}>({}),
+  additionalSkills: new FormRecord<FormControl<boolean>>({}),
+  resumeLink: new FormControl(''),
+  references: new FormArray([
+    new FormGroup({
+      name: new FormControl(''),
+      description: new FormControl(''),
+    }),
+  ]),
+});
+```
+cambiado con
+```
+private _fb = inject(FormBuilder);
+
+form = this._fb.group({
+  personalInfo: this._fb.group({
+    firstName: '',
+    lastName: '',
+  }),
+  email: '',
+  employmentStatus: this._fb.nonNullable.control('employee'),
+  position: '',
+  //additionalSkills: new FormGroup<{[key: string]: FormControl<boolean>}>({}),
+  additionalSkills: this._fb.record<boolean>({}),
+  resumeLink: '',
+  references: this._fb.array([
+    this._fb.group({
+      name: '',
+      description: '',
+    }),
+  ]),
+});
+```

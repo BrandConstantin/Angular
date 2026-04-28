@@ -1,6 +1,6 @@
 import { JsonPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { FormArray, FormControl, FormGroup, FormGroupDirective, FormRecord, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective, FormRecord, ReactiveFormsModule } from '@angular/forms';
 import { GetAditionalService } from '../../services/get-aditional.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
@@ -18,27 +18,29 @@ export class ReactiveForm {
     this.additionalSkillsService.getAditionalSkills()
       .pipe(tap((additionalSkills: string[]) => {
         additionalSkills.forEach((skill) => {
-          this.form.controls.additionalSkills.addControl(skill, new FormControl(false, {nonNullable: true}));
+          this.form.controls.additionalSkills.addControl(skill, this._fb.nonNullable.control(false));
         });
       })
     )
   );
 
-  form = new FormGroup({
-    personalInfo: new FormGroup({
-      firstName: new FormControl(''),
-      lastName: new FormControl(''),
+  private _fb = inject(FormBuilder);
+
+  form = this._fb.group({
+    personalInfo: this._fb.group({
+      firstName: '',
+      lastName: '',
     }),
-    email: new FormControl(''),
-    employmentStatus: new FormControl('employee', { nonNullable: true }),
-    position: new FormControl(''),
+    email: '',
+    employmentStatus: this._fb.nonNullable.control('employee'),
+    position: '',
     //additionalSkills: new FormGroup<{[key: string]: FormControl<boolean>}>({}),
-    additionalSkills: new FormRecord<FormControl<boolean>>({}),
-    resumeLink: new FormControl(''),
-    references: new FormArray([
-      new FormGroup({
-        name: new FormControl(''),
-        description: new FormControl(''),
+    additionalSkills: this._fb.record<boolean>({}),
+    resumeLink: '',
+    references: this._fb.array([
+      this._fb.group({
+        name: '',
+        description: '',
       }),
     ]),
   });
@@ -51,9 +53,9 @@ export class ReactiveForm {
   }
 
   addReference() {
-    this.form.controls.references.push(new FormGroup({
-      name: new FormControl(''),
-      description: new FormControl(''),
+    this.form.controls.references.push(this._fb.group({
+      name: '',
+      description: '',
     }));
   }
 
