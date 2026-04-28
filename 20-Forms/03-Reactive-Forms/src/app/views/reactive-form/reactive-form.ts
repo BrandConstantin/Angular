@@ -18,7 +18,7 @@ export class ReactiveForm {
     this.additionalSkillsService.getAditionalSkills()
       .pipe(tap((additionalSkills: string[]) => {
         additionalSkills.forEach((skill) => {
-          this.form.controls.additionalSkills.addControl(skill, new FormControl(true, { nonNullable: true }));
+          this.form.controls.additionalSkills.addControl(skill, new FormControl(false, {nonNullable: true}));
         });
       })
     )
@@ -32,6 +32,7 @@ export class ReactiveForm {
     email: new FormControl(''),
     employmentStatus: new FormControl('employee', { nonNullable: true }),
     position: new FormControl(''),
+    //additionalSkills: new FormGroup<{[key: string]: FormControl<boolean>}>({}),
     additionalSkills: new FormRecord<FormControl<boolean>>({}),
     resumeLink: new FormControl(''),
     references: new FormArray([
@@ -43,9 +44,10 @@ export class ReactiveForm {
   });
 
   constructor() {
-    // setTimeout(() => {
-    //   this.form.controls.additionalSkills.controls['Angular'].setValue(true);
-    // }, 2000);
+    setTimeout(() => { // marcar checkbox
+      this.form.controls.additionalSkills.controls['Angular'].setValue(true);
+      this.form.controls.additionalSkills.controls['MongoDB'].setValue(true);
+    }, 2000);
   }
 
   addReference() {
