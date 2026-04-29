@@ -13,6 +13,15 @@
                     placeholder="First Name"
                     formControlName="firstName"
                 >
+                <!-- @if(form.controls.personalInfo.get('firstName')?.invalid && form.controls.personalInfo.get('firstName')?.touched) {} -->
+
+                @let firstNameControl = form.controls.personalInfo.get('firstName');
+                @if(firstNameControl?.dirty && firstNameControl?.hasError('required')) {
+                    <div class="text-error">First name is required.</div>
+                }
+                @if(firstNameControl?.dirty && firstNameControl?.hasError('minlength')) {
+                    <div class="text-error">First name must be at least {{ firstNameControl?.getError('minlength')?.requiredLength }} characters long.</div>
+                }
             </div>
             <div class="form-control">
                 <label for="last-name">Last Name</label>
@@ -22,6 +31,13 @@
                     placeholder="Last Name"
                     formControlName="lastName"
                 >
+                @let lastNameControl = form.controls.personalInfo.get('lastName');
+                @if(lastNameControl?.dirty && lastNameControl?.hasError('required')) {
+                    <div class="text-error">Last name is required.</div>
+                }
+                @if(lastNameControl?.dirty && lastNameControl?.hasError('minlength')) {
+                    <div class="text-error">Last name must be at least 3 characters long.</div>
+                }
             </div>
         </div>
     </div>
@@ -33,6 +49,13 @@
             placeholder="jhon.doe@gmail.com"
             formControlName="email"
         >
+        @let emailControl = form.controls.email;
+        @if(emailControl?.dirty && emailControl?.hasError('required')) {
+            <div class="text-error">Email is required.</div>
+        }
+        @if(emailControl?.dirty && emailControl?.hasError('email')) {
+            <div class="text-error">Please enter a valid email address.</div>
+        }
     </div>
 
     <div class="radio-group">
@@ -42,6 +65,7 @@
                 type="radio"
                 id="employee"
                 formControlName="employmentStatus"
+                value="employee"
             >
             <label for="employee">Employee</label>
         </div>
@@ -50,6 +74,7 @@
                 type="radio"
                 id="unemployee"
                 formControlName="employmentStatus"
+                value="unemployee"
             >
             <label for="unemployee">Unemployee</label>
         </div>
@@ -58,6 +83,7 @@
                 type="radio"
                 id="self-employeed"
                 formControlName="employmentStatus"
+                value="self-employeed"
             >
             <label for="self-employeed">Self-Employeed</label>
         </div>
@@ -66,9 +92,14 @@
                 type="radio"
                 id="student"
                 formControlName="employmentStatus"
+                value="student"
             >
             <label for="student">Student</label>
         </div>
+        @let employmentStatusControl = form.controls.employmentStatus;
+        @if(employmentStatusControl!.dirty && employmentStatusControl!.hasError('required')) {
+            <div class="text-error">Employment status is required.</div>
+        }
     </div>
     <div class="form-control">
         <label for="open-positions">What position are you applying for?</label>
@@ -82,6 +113,10 @@
             <option value="Java Developer">Java Developer</option>
             <option value="Python Developer">Python Developer</option>
         </select>
+        @let positionControl = form.controls.position;
+        @if(positionControl!.dirty && positionControl!.hasError('required')) {
+            <div class="text-error">Position is required.</div>
+        }
     </div>
 
     <div class="checkbox-group" formGroupName="additionalSkills">
@@ -108,6 +143,13 @@
             placeholder="www.example.com"
             formControlName="resumeLink"
         >
+        @let resumeLinkControl = form.controls.resumeLink;
+        @if(resumeLinkControl!.dirty && resumeLinkControl!.hasError('required')) {
+            <div class="text-error">Resume link is required.</div>
+        }
+        @if(resumeLinkControl!.dirty && resumeLinkControl!.hasError('pattern')) {
+            <div class="text-error">Please enter a valid URL.</div>
+        }
     </div>
 
     <div class="form-group">

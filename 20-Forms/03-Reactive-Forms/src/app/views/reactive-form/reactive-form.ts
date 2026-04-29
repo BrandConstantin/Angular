@@ -1,6 +1,6 @@
 import { JsonPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective, FormRecord, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective, FormRecord, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GetAditionalService } from '../../services/get-aditional.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
@@ -28,19 +28,21 @@ export class ReactiveForm {
 
   form = this._fb.group({
     personalInfo: this._fb.group({
-      firstName: '',
-      lastName: '',
+      firstName: ['', [Validators.required, Validators.minLength(3)]], // con FormBuilder
+      lastName: new FormControl('', [Validators.required, Validators.minLength(3)]), // de la forma tradicional
     }),
-    email: '',
-    employmentStatus: this._fb.nonNullable.control('employee'),
-    position: '',
+    email: ['', [Validators.required, Validators.email]],
+    employmentStatus: this._fb.nonNullable.control('employee', Validators.required),
+    //employmentStatus: this._fb.control('employee', {nonNullable: true, validators: Validators.required}), // otra forma de marcar el control como nonNullable
+    //employmentStatus: new FormControl('employee', {nonNullable: true, validators: Validators.required}), // de la forma tradicional
+    position: this._fb.control('', Validators.required),
     //additionalSkills: new FormGroup<{[key: string]: FormControl<boolean>}>({}),
     additionalSkills: this._fb.record<boolean>({}),
-    resumeLink: '',
+    resumeLink: ['', [Validators.required, Validators.pattern(/^(https?:\/\/)?([\w-]+(\.[\w-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/)]],
     references: this._fb.array([
       this._fb.group({
-        name: '',
-        description: '',
+        name: [''],
+        description: [''],
       }),
     ]),
   });
