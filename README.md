@@ -3013,3 +3013,53 @@ export function bannedWords(bannedWord: string | string[]): ValidatorFn {
     <div class="text-error">Last name contains inappropriate words: {{ lastNameControl?.getError('bannedWordValidator') }}</div>
 }
 ```
+
+## Cross-Field Validation
+Validación de campos cruzados:
+```
+email: this._fb.group({
+  email: ['', [Validators.required, Validators.email]],
+  confirmEmail: ['', [Validators.required]],
+}, { validators: [confirmEmailValidator('email', 'confirmEmail')] }),
+
+.....
+<div class="form-control">
+    <label for="confirm-email">Confirm Email</label>
+    <input
+        type="email"
+        id="confirm-email"
+        placeholder="Confirm Email"
+        formControlName="confirmEmail"
+    >
+    @let confirmEmailControl = form.controls.email.controls.confirmEmail;
+    @if(confirmEmailControl?.dirty && form.controls.email.hasError('noMatch')) {
+        <div class="text-error">Email addresses do not match.</div>
+    }
+</div>
+
+.....
+export function confirmEmailValidator(email: string, confirmEmail: string): ValidatorFn {
+    return function(formGroup: AbstractControl): ValidationErrors | null {
+        const emailControl = formGroup.get(email);
+        const confirmEmailControl = formGroup.get(confirmEmail);
+
+        let error: ValidationErrors | null = null;
+
+        if(emailControl?.value === ''){
+            error = { emailIsRequired: true };
+        } else {
+            error = emailControl?.value === confirmEmailControl?.value 
+                ? null 
+                : { noMatch: true };
+        }
+
+        if(emailControl?.dirty && confirmEmailControl?.pristine) {
+            confirmEmailControl.markAsDirty();
+        }
+
+        confirmEmailControl?.setErrors(error);
+
+        return error;
+    }
+}
+```

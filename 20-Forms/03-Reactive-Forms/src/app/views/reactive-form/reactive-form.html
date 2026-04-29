@@ -44,21 +44,40 @@
             </div>
         </div>
     </div>
-    <div class="form-control">
-        <label for="email">Email</label>
-        <input
-            type="email"
-            id="email"
-            placeholder="jhon.doe@gmail.com"
-            formControlName="email"
-        >
-        @let emailControl = form.controls.email;
-        @if(emailControl?.dirty && emailControl?.hasError('required')) {
-            <div class="text-error">Email is required.</div>
-        }
-        @if(emailControl?.dirty && emailControl?.hasError('email')) {
-            <div class="text-error">Please enter a valid email address.</div>
-        }
+
+    <div class="form-group">
+        <h4>Email</h4>
+        <div class="form-group-box" formGroupName="email">
+            <div class="form-control">
+                <label for="email">Email</label>
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="jhon.doe@gmail.com"
+                    formControlName="email"
+                >
+                @let emailControl = form.controls.email.controls.email;
+                @if(emailControl?.dirty && emailControl?.hasError('required')) {
+                    <div class="text-error">Email is required.</div>
+                }
+                @if(emailControl?.dirty && emailControl?.hasError('email')) {
+                    <div class="text-error">Please enter a valid email address.</div>
+                }
+            </div>
+            <div class="form-control">
+                <label for="confirm-email">Confirm Email</label>
+                <input
+                    type="email"
+                    id="confirm-email"
+                    placeholder="Confirm Email"
+                    formControlName="confirmEmail"
+                >
+                @let confirmEmailControl = form.controls.email.controls.confirmEmail;
+                @if(confirmEmailControl?.dirty && form.controls.email.hasError('noMatch')) {
+                    <div class="text-error">Email addresses do not match.</div>
+                }
+            </div>
+        </div>
     </div>
 
     <div class="radio-group">
