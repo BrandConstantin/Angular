@@ -1,3 +1,10 @@
+form, .form-group, .radio-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    row-gap: 16px;
+}
+
 form{
     width: 100%;
     max-width: 510px;
@@ -8,21 +15,9 @@ form h2{
     text-align: center;
 }
 
-.form-group, .form-group-box, .box-column, .checkbox-group{
+.form-group-box{
     display: flex;
-    column-gap: 8px;
-    flex-direction: column;
-}
-
-.box-column{
     row-gap: 8px;
-    margin: 8px 0;
-}
-
-.form-control-box{
-    display: flex;
-    column-gap: 8px;
-    align-items: flex-end;
 }
 
 .form-control {
@@ -46,13 +41,7 @@ form h2{
 
 .form-control input[type="text"]:focus, input[type="email"]:focus, input[type="url"]:focus, select:focus {
     border-color: #007BFF;
-}  
-
-.form-checkbox-control {
-    display: flex;
-    align-items: center;
-    column-gap: 8px;
-}
+}   
 
 .text-error{
     color: red;
@@ -109,18 +98,4 @@ form h2{
     background-color: #007BFF;
     opacity: 0.5;
     cursor: not-allowed;
-}
-
-.btn-error {
-    background-color: red;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin: 30px;
-}
-
-.btn-error:hover {
-    color: #070707;
 }

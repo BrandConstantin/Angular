@@ -2889,3 +2889,103 @@ constructor() {
   }, 2000);
 }
 ```
+
+## FormBuilder
+Se cambian todo a FormBuilder
+```
+form = new FormGroup({
+  personalInfo: new FormGroup({
+    firstName: new FormControl(''),
+    lastName: new FormControl(''),
+  }),
+  email: new FormControl(''),
+  employmentStatus: new FormControl('employee', { nonNullable: true }),
+  position: new FormControl(''),
+  //additionalSkills: new FormGroup<{[key: string]: FormControl<boolean>}>({}),
+  additionalSkills: new FormRecord<FormControl<boolean>>({}),
+  resumeLink: new FormControl(''),
+  references: new FormArray([
+    new FormGroup({
+      name: new FormControl(''),
+      description: new FormControl(''),
+    }),
+  ]),
+});
+```
+cambiado con
+```
+private _fb = inject(FormBuilder);
+
+form = this._fb.group({
+  personalInfo: this._fb.group({
+    firstName: '',
+    lastName: '',
+  }),
+  email: '',
+  employmentStatus: this._fb.nonNullable.control('employee'),
+  position: '',
+  //additionalSkills: new FormGroup<{[key: string]: FormControl<boolean>}>({}),
+  additionalSkills: this._fb.record<boolean>({}),
+  resumeLink: '',
+  references: this._fb.array([
+    this._fb.group({
+      name: '',
+      description: '',
+    }),
+  ]),
+});
+```
+
+## Estados de formulario
+Estados Principales de ngForm y ngModel. Angular añade clases CSS automáticamente a los elementos del formulario (<form>, <input>, etc.) para reflejar su estado: 
+* Validez:
+  - ng-valid: El formulario o control cumple con las reglas de validación.
+  - ng-invalid: El formulario o control incumple las reglas de validación.
+* Interacción (Modificación):
+  - ng-pristine: El usuario no ha modificado el valor del control aún.
+  - ng-dirty: El usuario ha cambiado el valor del control.
+* Interacción (Foco):
+  - ng-touched: El usuario ha visitado (enfocado y desenfocado) el control.
+  - ng-untouched: El usuario no ha visitado el control.
+
+Formas de validar un formulario:
+```
+firstName: ['', [Validators.required, Validators.minLength(3)]], // con FormBuilder
+lastName: new FormControl('', [Validators.required, Validators.minLength(3)]), // de la forma tradicional
+```
+
+Validar formulario:
+```
+form = this._fb.group({
+  personalInfo: this._fb.group({
+    firstName: ['', [Validators.required, Validators.minLength(3)]], // con FormBuilder
+    lastName: new FormControl('', [Validators.required, Validators.minLength(3)]), // de la forma tradicional
+  }),
+  email: ['', [Validators.required, Validators.email]],
+  employmentStatus: this._fb.nonNullable.control('employee', Validators.required),
+  //employmentStatus: this._fb.control('employee', {nonNullable: true, validators: Validators.required}), // otra forma de marcar el control como nonNullable
+  //employmentStatus: new FormControl('employee', {nonNullable: true, validators: Validators.required}), // de la forma tradicional
+  position: this._fb.control('', Validators.required),
+  //additionalSkills: new FormGroup<{[key: string]: FormControl<boolean>}>({}),
+  additionalSkills: this._fb.record<boolean>({}),
+  resumeLink: ['', [Validators.required, Validators.pattern(/^(https?:\/\/)?([\w-]+(\.[\w-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/)]],
+  references: this._fb.array([
+    this._fb.group({
+      name: [''],
+      description: [''],
+    }),
+  ]),
+});
+```
+
+HTML:
+```
+@let firstNameControl = form.controls.personalInfo.get('firstName');
+@if(firstNameControl?.dirty && firstNameControl?.hasError('required')) {
+    <div class="text-error">First name is required.</div>
+}
+@if(firstNameControl?.dirty && firstNameControl?.hasError('minlength')) {
+    <div class="text-error">First name must be at least {{ firstNameControl?.getError('minlength')?.requiredLength }} characters long.</div>
+}
+```
+
