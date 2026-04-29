@@ -1,9 +1,10 @@
 import { JsonPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective, FormRecord, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroupDirective, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GetAditionalService } from '../../services/get-aditional.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
+import { bannedWords } from './validators/banned-words.validator';
 
 @Component({
   selector: 'app-reactive-form',
@@ -29,7 +30,8 @@ export class ReactiveForm {
   form = this._fb.group({
     personalInfo: this._fb.group({
       firstName: ['', [Validators.required, Validators.minLength(3)]], // con FormBuilder
-      lastName: new FormControl('', [Validators.required, Validators.minLength(3)]), // de la forma tradicional
+      //lastName: new FormControl('', [Validators.required, Validators.minLength(3)]), // de la forma tradicional
+      lastName: ['', [Validators.required, Validators.minLength(3), bannedWords(['admin', 'root'])]], // con FormBuilder y un validador asíncrono personalizado
     }),
     email: ['', [Validators.required, Validators.email]],
     employmentStatus: this._fb.nonNullable.control('employee', Validators.required),

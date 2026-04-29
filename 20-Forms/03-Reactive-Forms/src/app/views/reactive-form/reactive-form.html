@@ -38,6 +38,9 @@
                 @if(lastNameControl?.dirty && lastNameControl?.hasError('minlength')) {
                     <div class="text-error">Last name must be at least 3 characters long.</div>
                 }
+                @if(lastNameControl?.dirty && lastNameControl?.hasError('bannedWordValidator')) {
+                    <div class="text-error">Last name contains inappropriate words: {{ lastNameControl?.getError('bannedWordValidator') }}</div>
+                }
             </div>
         </div>
     </div>

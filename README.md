@@ -2948,6 +2948,7 @@ Estados Principales de ngForm y ngModel. Angular añade clases CSS automáticame
   - ng-touched: El usuario ha visitado (enfocado y desenfocado) el control.
   - ng-untouched: El usuario no ha visitado el control.
 
+## Validar formulario
 Formas de validar un formulario:
 ```
 firstName: ['', [Validators.required, Validators.minLength(3)]], // con FormBuilder
@@ -2989,3 +2990,26 @@ HTML:
 }
 ```
 
+## Validación personalizada formulario
+```
+...
+lastName: ['', [Validators.required, Validators.minLength(3), bannedWords(['admin', 'root'])]],
+...
+
+export function bannedWords(bannedWord: string | string[]): ValidatorFn {
+    return function(control: AbstractControl<string>): ValidationErrors | null {
+        const bannedWordsList: string[] = Array.isArray(bannedWord) ? bannedWord : [bannedWord]; // Asegurarse de que sea un array
+        const controlValue = control.value?.toLowerCase();
+        
+        const foundBannedWord = bannedWordsList.find((word) => controlValue.includes(word.toLowerCase())); // Verificar si el valor del control coincide con alguna palabra prohibida
+
+        return foundBannedWord 
+            ? { bannedWordValidator: foundBannedWord } // Retorna un error si se encuentra una palabra prohibida, de lo contrario retorna null
+            : null; // Retorna null si no se encuentra ninguna palabra prohibida
+    }
+}
+.....
+@if(lastNameControl?.dirty && lastNameControl?.hasError('bannedWordValidator')) {
+    <div class="text-error">Last name contains inappropriate words: {{ lastNameControl?.getError('bannedWordValidator') }}</div>
+}
+```
