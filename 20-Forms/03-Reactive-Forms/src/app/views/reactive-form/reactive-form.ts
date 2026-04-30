@@ -5,6 +5,9 @@ import { GetAditionalService } from '../../services/get-aditional.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
 import { bannedWords } from './validators/banned-words.validator';
+import { confirmEmailValidator } from './validators/confirm-email.validator';
+import { checkEmailAsyncValidator } from './validators/check-email-async.validator';
+import { GetEmailService } from '../../services/get-email.service';
 
 @Component({
   selector: 'app-reactive-form',
@@ -26,6 +29,7 @@ export class ReactiveForm {
   );
 
   private _fb = inject(FormBuilder);
+  private _getEmailService = inject(GetEmailService);
 
   form = this._fb.group({
     personalInfo: this._fb.group({
@@ -33,7 +37,10 @@ export class ReactiveForm {
       //lastName: new FormControl('', [Validators.required, Validators.minLength(3)]), // de la forma tradicional
       lastName: ['', [Validators.required, Validators.minLength(3), bannedWords(['admin', 'root'])]], // con FormBuilder y un validador asíncrono personalizado
     }),
-    email: ['', [Validators.required, Validators.email]],
+    email: this._fb.group({
+      email: ['', [Validators.required, Validators.email], [checkEmailAsyncValidator(this._getEmailService)]],
+      confirmEmail: ['', [Validators.required]],
+    }, { validators: [confirmEmailValidator('email', 'confirmEmail')] }),
     employmentStatus: this._fb.nonNullable.control('employee', Validators.required),
     //employmentStatus: this._fb.control('employee', {nonNullable: true, validators: Validators.required}), // otra forma de marcar el control como nonNullable
     //employmentStatus: new FormControl('employee', {nonNullable: true, validators: Validators.required}), // de la forma tradicional
