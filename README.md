@@ -3100,3 +3100,76 @@ email: ['', [Validators.required, Validators.email], [checkEmailAsyncValidator(t
     <div class="text-info">Checking email availability...</div>
 }
 ```
+
+## Validadores dinámicos 
+El html:
+```
+<div class="radio-group">
+    Verify account with:
+    <div class="form-radio-control">
+        <input
+            type="radio"
+            name="verify-account"
+            id="verify-email"
+            [formControl]="verifyAccountWithControl"
+            value="email"
+        >
+        <label for="verify-email">Email</label>
+    </div>
+    <div class="form-radio-control">
+        <input
+            type="radio"
+            name="verify-account"
+            id="verify-phone"
+            [formControl]="verifyAccountWithControl"
+            value="phone"
+        >
+        <label for="verify-phone">Phone</label>
+    </div>
+</div>
+
+<div class="form-control">
+    <label for="phone-number">Phone Number</label>
+    <input
+        type="tel"
+        id="phone-number"
+        placeholder="Enter your phone number"
+        formControlName="phoneNumber"
+        (keypress)="handleKeyPress($event)"
+    >
+
+    @let phoneNumberControl = form.controls.phoneNumber;
+    @if(verifyAccountWithControl.value === 'phone' && (phoneNumberControl.pristine || phoneNumberControl.dirty) && phoneNumberControl?.hasError('required')) {
+        <div class="text-error">Phone number is required when verifying with phone.</div>
+    }
+    @if(verifyAccountWithControl.value === 'phone' && phoneNumberControl?.dirty && phoneNumberControl?.hasError('minlength')) {
+        <div class="text-error">Phone number must be at least <strong>{{ phoneNumberControl?.errors?.['minlength']?.requiredLength }}</strong> characters long.</div>
+    }
+</div>
+```
+
+El TypeScript:
+```
+verifyAccountWithControl = new FormControl('email');
+dynamicValidators: ValidatorFn[] = [Validators.required, Validators.minLength(9)];
+
+handleKeyPress(event: KeyboardEvent) {
+  if(!RegExp(/^\d$/).exec(event.key)) {
+    event.preventDefault();
+  }
+}
+
+constructor() {
+  this.verifyAccountWithControl.valueChanges.subscribe((value) => {
+    if(value === 'email') {
+      //this.form.controls.phoneNumber.removeValidators(this.dynamicValidators); // remover validadores específicados
+      this.form.controls.phoneNumber.clearValidators(); // remover todos los validadores, sin importar cuáles sean
+    } else {
+      //this.form.controls.phoneNumber.addValidators(this.dynamicValidators); // agregar validadores sin importar si ya existen o no, lo que puede causar validadores duplicados
+      this.form.controls.phoneNumber.setValidators(this.dynamicValidators); // agregar validadores, pero reemplazando los existentes, lo que evita validadores duplicados
+    }
+
+    this.form.controls.phoneNumber.updateValueAndValidity();
+  });
+}
+```

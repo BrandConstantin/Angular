@@ -211,6 +211,49 @@
         </div>
     </div>
 
+    <div class="radio-group">
+        Verify account with:
+        <div class="form-radio-control">
+            <input
+                type="radio"
+                name="verify-account"
+                id="verify-email"
+                [formControl]="verifyAccountWithControl"
+                value="email"
+            >
+            <label for="verify-email">Email</label>
+        </div>
+        <div class="form-radio-control">
+            <input
+                type="radio"
+                name="verify-account"
+                id="verify-phone"
+                [formControl]="verifyAccountWithControl"
+                value="phone"
+            >
+            <label for="verify-phone">Phone</label>
+        </div>
+    </div>
+
+    <div class="form-control">
+        <label for="phone-number">Phone Number</label>
+        <input
+            type="tel"
+            id="phone-number"
+            placeholder="Enter your phone number"
+            formControlName="phoneNumber"
+            (keypress)="handleKeyPress($event)"
+        >
+
+        @let phoneNumberControl = form.controls.phoneNumber;
+        @if(verifyAccountWithControl.value === 'phone' && (phoneNumberControl.pristine || phoneNumberControl.dirty) && phoneNumberControl?.hasError('required')) {
+            <div class="text-error">Phone number is required when verifying with phone.</div>
+        }
+        @if(verifyAccountWithControl.value === 'phone' && phoneNumberControl?.dirty && phoneNumberControl?.hasError('minlength')) {
+            <div class="text-error">Phone number must be at least <strong>{{ phoneNumberControl?.errors?.['minlength']?.requiredLength }}</strong> characters long.</div>
+        }
+    </div>
+
     <div class="form-actions">
         <button class="btn btn-secondary">Reset</button>
         <button class="btn btn-primary">Submit</button>
