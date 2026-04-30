@@ -63,6 +63,12 @@
                 @if(emailControl?.dirty && emailControl?.hasError('email')) {
                     <div class="text-error">Please enter a valid email address.</div>
                 }
+                @if(emailControl?.dirty && emailControl?.hasError('isAnExistingEmail')) {
+                    <div class="text-error">This email address is already taken.</div>
+                }
+                @if(emailControl?.pending) {
+                    <div class="text-info">Checking email availability...</div>
+                }
             </div>
             <div class="form-control">
                 <label for="confirm-email">Confirm Email</label>

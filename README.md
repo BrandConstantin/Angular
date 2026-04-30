@@ -2708,9 +2708,14 @@ export class GetEmailService {
     private _http = inject(HttpClient);
     
     getEmail(): Observable<string[]> {
-        return this._http.get<string[]>('assets/json/email-data.json').pipe(
-            delay(2000)
-        );
+        return this._http.get<string[]>('assets/json/email-data.json')
+            .pipe(
+                catchError((error) => {
+                    console.error('Error fetching email data:', error);
+                    return throwError(() => ({error: {status: 0, type: 'error', message: 'Unable to fetch email data. Please try again later.'}}));
+                }),
+                delay(2000)
+            );
     }
 }
 
@@ -3061,5 +3066,37 @@ export function confirmEmailValidator(email: string, confirmEmail: string): Vali
 
         return error;
     }
+}
+```
+
+## Async validator
+```
+export function checkEmailAsyncValidator(service: GetEmailService): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    return service.getEmail().pipe(
+      map((emails: string[]) => {
+        const emailExists = emails.find((email) => email === control?.value);
+        return emailExists ? { isAnExistingEmail: true } : null;        
+      }),
+      catchError((error) => {
+        console.error('Error in async validator:', error);
+        return of(error); // En caso de error, no marcar el control como inválido
+      })
+    );
+  };
+}
+
+.....
+private _getEmailService = inject(GetEmailService);
+...
+email: ['', [Validators.required, Validators.email], [checkEmailAsyncValidator(this._getEmailService)]],
+...
+.....
+
+@if(emailControl?.dirty && emailControl?.hasError('isAnExistingEmail')) {
+    <div class="text-error">This email address is already taken.</div>
+}
+@if(emailControl?.pending) {
+    <div class="text-info">Checking email availability...</div>
 }
 ```
