@@ -1,6 +1,6 @@
 import { JsonPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { FormBuilder, FormControl, FormGroupDirective, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { GetAditionalService } from '../../services/get-aditional.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
@@ -28,7 +28,8 @@ export class ReactiveForm {
         additionalSkills.forEach((skill) => {
           this.form.controls.additionalSkills.addControl(skill, this._fb.nonNullable.control(false));
         });
-      })
+      }),
+      tap(() => { this.initialFormValue = this.form.value; }) 
     )
   );
 
@@ -81,10 +82,10 @@ export class ReactiveForm {
     });
   }
 
-  addReference() {
+  addReference(name = '', description = '') {
     this.form.controls.references.push(this._fb.group({
-      name: '',
-      description: '',
+      name: name,
+      description: description,
     }));
   }
 
@@ -94,18 +95,53 @@ export class ReactiveForm {
 
   onSubmit() {
     console.log(this.form);
+    this.markAllAsDirty(this.form);
+
+    if(this.form.invalid) {
+      console.log('Form is invalid');
+      return;
+    }
+
+    this.initialFormValue = this.form.value;
   }
+
+  initialFormValue!: any;
 
   handleReset(event: Event, groupDirective: FormGroupDirective) {
     event.preventDefault();
-    // this.form.reset();
+    this.form.reset();
     console.log('Form reset ', groupDirective);
+    this.form.reset(this.initialFormValue);
+
+    // referencias
+    const firstReference = this.initialFormValue.references[0];
+    const {name, description} = firstReference;
+    this.form.controls.references.clear();
+    this.addReference(name, description);
   }
 
   handleKeyPress(event: KeyboardEvent) {
     if(!RegExp(/^\d$/).exec(event.key)) {
       event.preventDefault();
     }
+  }
+
+  markAllAsDirty(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach(control => {
+      if(control instanceof FormGroup) {
+        this.markAllAsDirty(control);
+      }
+      
+      if(control instanceof FormArray) {
+        control.controls.forEach(group => {
+          if(group instanceof FormGroup) {
+            this.markAllAsDirty(group);
+          }
+        });
+      }
+
+      control.markAsDirty();
+    });
   }
     
 }
