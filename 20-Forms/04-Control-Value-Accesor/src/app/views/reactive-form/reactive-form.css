@@ -1,0 +1,101 @@
+form, .form-group, .radio-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    row-gap: 16px;
+}
+
+form{
+    width: 100%;
+    max-width: 510px;
+    padding: 20px;
+}
+
+form h2{
+    text-align: center;
+}
+
+.form-group-box{
+    display: flex;
+    row-gap: 8px;
+}
+
+.form-control {
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+    width: 100%;
+}
+
+.form-control input[type="text"], input[type="email"], input[type="url"], select {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #2b2929;
+    border-radius: 4px;
+    outline: none;
+}
+
+.form-control input[type="text"].ng-valid.ng-dirty, input[type="email"].ng-valid.ng-dirty, input[type="url"].ng-valid.ng-dirty, select.ng-valid.ng-dirty {
+    border-color: green;
+}
+
+.form-control input[type="text"]:focus, input[type="email"]:focus, input[type="url"]:focus, select:focus {
+    border-color: #007BFF;
+}   
+
+.text-error{
+    color: red;
+    border: #2b2929 1px solid;
+    font-size: 14px;
+}
+
+.form-radio-control {
+    display: flex;
+    align-items: center;
+    column-gap: 8px;
+}
+
+.form-radio-control input[type="radio"] {
+    width: 16px;
+    height: 16px;
+}
+
+.form-radio-control label {
+    cursor: pointer;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    column-gap: 8px;
+}
+
+.btn-secondary{
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 30px;
+}
+
+.btn-primary{
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 30px;
+}
+
+.btn-primary:hover {
+    color: #070707;
+}
+
+.btn-primary:disabled {
+    background-color: #007BFF;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
