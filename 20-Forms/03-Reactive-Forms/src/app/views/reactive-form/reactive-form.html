@@ -79,6 +79,9 @@
                     formControlName="confirmEmail"
                 >
                 @let confirmEmailControl = form.controls.email.controls.confirmEmail;
+                @if(confirmEmailControl?.dirty && confirmEmailControl?.hasError('required')) {
+                    <div class="text-error">Confirming your email is required.</div>
+                }
                 @if(confirmEmailControl?.dirty && form.controls.email.hasError('noMatch')) {
                     <div class="text-error">Email addresses do not match.</div>
                 }
@@ -183,7 +186,7 @@
     <div class="form-group">
         <h4>References</h4>
         <div class="form-group-box box-column" formArrayName="references">
-            <button class="btn btn-primary" (click)="addReference()">Add Reference</button>
+            <button class="btn btn-primary" type="button" (click)="addReference()">Add Reference</button>
             <!-- <div class="form-control" *ngFor="let ref of form.get('references')?.controls; let i = index"> -->
             @for(reference of form.controls.references.controls; track reference; let i = $index) {
                 <div class="form-control-box" [formGroupName]="i">
@@ -205,7 +208,7 @@
                         formControlName="description"
                         >
                     </div>
-                    <button class="btn btn-error" (click)="removeReference(i)">Remove</button>
+                    <button class="btn btn-error" type="button" (click)="removeReference(i)">Remove</button>
                 </div>
             }
         </div>
@@ -255,7 +258,7 @@
     </div>
 
     <div class="form-actions">
-        <button class="btn btn-secondary">Reset</button>
-        <button class="btn btn-primary">Submit</button>
+        <button class="btn btn-secondary" type="reset">Reset</button>
+        <button class="btn btn-primary" type="submit">Submit</button>
     </div>
 </form>

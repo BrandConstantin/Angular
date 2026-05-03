@@ -3173,3 +3173,51 @@ constructor() {
   });
 }
 ```
+
+## Reset & Submit
+```
+  onSubmit() {
+    console.log(this.form);
+    this.markAllAsDirty(this.form);
+
+    if(this.form.invalid) {
+      console.log('Form is invalid');
+      return;
+    }
+
+    this.initialFormValue = this.form.value;
+  }
+
+  initialFormValue!: any;
+
+  handleReset(event: Event, groupDirective: FormGroupDirective) {
+    event.preventDefault();
+    this.form.reset();
+    console.log('Form reset ', groupDirective);
+    this.form.reset(this.initialFormValue);
+
+    // referencias
+    const firstReference = this.initialFormValue.references[0];
+    const {name, description} = firstReference;
+    this.form.controls.references.clear();
+    this.addReference(name, description);
+  }
+
+  markAllAsDirty(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach(control => {
+      if(control instanceof FormGroup) {
+        this.markAllAsDirty(control);
+      }
+      
+      if(control instanceof FormArray) {
+        control.controls.forEach(group => {
+          if(group instanceof FormGroup) {
+            this.markAllAsDirty(group);
+          }
+        });
+      }
+
+      control.markAsDirty();
+    });
+  }
+```
