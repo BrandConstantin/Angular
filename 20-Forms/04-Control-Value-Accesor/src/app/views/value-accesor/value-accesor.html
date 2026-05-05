@@ -3,3 +3,7 @@
 <star-rating [stars]="counter()" [disabled]="false" (ratingChange)="ratingChange($event)"></star-rating>
 
 <button (click)="adding()">Add Stars</button>
+
+<h3>From Control</h3>
+<hr>
+<star-rating [stars]="counter()" [formControl]="starRatingControl"></star-rating>

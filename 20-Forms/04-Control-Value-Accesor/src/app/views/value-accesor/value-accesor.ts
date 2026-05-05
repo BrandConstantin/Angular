@@ -9,17 +9,25 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './value-accesor.css',
 })
 export class ValueAccesor {
-  starRatingControl = new FormControl(3); // valor inicial de 3 estrellas
+  starRatingControl = new FormControl<number | null>({value: 3, disabled: true}); // valor inicial de 3 estrellas
 
-  counter = signal(4); // contador para agregar estrellas
+  counter = signal(5); // contador para agregar estrellas
 
-  adding() {
-    this.counter.update((count) => count + 1); // incrementa el contador
-    this.starRatingControl.setValue(this.counter()); // actualiza el valor del control con el nuevo contador
+  constructor() {
+    this.starRatingControl.valueChanges.subscribe(value => {
+      console.log('Valor del control:', value); // muestra el valor del control cada vez que cambia
+    });
+
+    setTimeout(() => {
+      this.starRatingControl.setValue(4); // actualiza el valor del control a 4 estrellas después de 2 segundos
+    }, 2000);
   }
 
-  ratingChange(newRating: number) {
+  adding() {
+    this.counter.set(this.counter() + 1); // incrementa el contador
+  }
+
+  ratingChange(newRating: number | null) {
     console.log('Nueva calificación:', newRating);
-    this.starRatingControl.setValue(newRating); // actualiza el valor del control con la nueva calificación
   }
 }
