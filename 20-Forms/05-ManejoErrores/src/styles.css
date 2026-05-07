@@ -1,0 +1,86 @@
+/* You can add global styles to this file, and also import other style files */
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #6c757d;
+  --tertiary-color: #28a745;
+  --background-color: #f8f9fa;
+  --text-color: #212529;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html.no-scroll {
+  overflow: hidden;
+  position: relative;
+  height: 100px;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  line-height: 1.15;
+  font-size: 16px;
+  background-color: rgb(var(--primary-color), var(--secondary-color), var(--tertiary-color));
+}
+
+h1, h2, h3, h4{
+  margin: 0;
+}
+
+button, a{
+  transition: all 0.3s ease;
+  cursor: pointer;
+  color: var(--text---primary-color);
+  font-size: 16px;
+}
+
+a:hover, button:hover{
+  color: var(--text-color);
+}
+
+a{
+  text-decoration: none;
+  padding: 4px 16px;
+}
+
+a:active, button:active{
+  color: var(--primary-color);
+  transform: scale(0.95);
+}
+
+button.btn{
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+}
+
+button.btn-primary{
+  background-color: rgba(var(--primary-color, 0.8));
+  color: white;
+}
+
+button.btn-primary:hover{
+  background-color: rgba(var(--primary-color, 1.0));
+}
+
+button.btn-secondary{
+  background-color: transparent;
+  border-color: rgba(var(--secondary-color, 0.8));
+}
+
+button.btn-secondary:hover{
+  color: rgba(var(--secondary-color, 1.0));
+  border-color: rgba(var(--secondary-color, 1.0));
+  background-color: white;
+}
+
+button.btn-tertiary{
+  background-color: transparent;
+  border: none;
+}
+
+button.btn-tertiary:hover{
+  background-color: rgba(var(--tertiary-color, 0.7));
+}

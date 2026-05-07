@@ -7,7 +7,7 @@ import { SecondValidator } from './directives/second-directive';
 
 @Component({
   selector: 'app-bonus',
-  imports: [Container, FirstChild, SecondChild, FirstValidator, SecondValidator],
+  imports: [Container, FirstValidator, SecondValidator],
   templateUrl: './bonus.html',
   styleUrl: './bonus.css',
 })

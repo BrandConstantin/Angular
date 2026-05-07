@@ -1,0 +1,187 @@
+
+<pre>{{ applicantForm | json }}</pre>
+
+<form autocomplete="off" #form="ngForm" (ngSubmit)="handleSubmit()" (reset)="handleReset($event)" [ngFormOptions]="{ updateOn: 'blur' }">
+    <h2>Job Application</h2>
+
+    <div class="form-group" ngModelGroup="name">
+        <div class="form-group-box">
+            <div class="form-control">
+                <label for="first">First Name:</label>
+                <input type="text" id="first" placeholder="First" 
+                    [(ngModel)]="applicantForm.name.first" [ngModelOptions]="{name: 'first', updateOn: 'blur' }"
+                    required minlength="3" #firstNameControl="ngModel">
+
+                    @if(firstNameControl.dirty && firstNameControl.hasError('required')) {
+                        <div class="text-error">First name is required.</div>
+                    }
+
+                    @if(firstNameControl.dirty && firstNameControl.hasError('minlength')) {
+                        @let minLengthError = firstNameControl.getError('minlength');
+                        <div class="text-error">First name must be at least {{ minLengthError?.requiredLength }} characters long.</div>
+                    }
+            </div>
+
+            <div class="form-control">
+                <label for="last">Last Name:</label>
+                <input type="text" id="last" name="lastName" placeholder="Last" 
+                    [(ngModel)]="applicantForm.name.last" required minlength="3" #lastNameControl="ngModel"
+                    [personalizateDirective]="[ 'admin', 'root', 'superuser' ]">
+
+                    @if(lastNameControl.dirty && lastNameControl.hasError('required')) {
+                        <div class="text-error">Last name is required.</div>
+                    }
+
+                    @if(lastNameControl.dirty && lastNameControl.hasError('minlength')) {
+                        @let minLengthError = lastNameControl.getError('minlength');
+                        <div class="text-error">Last name must be at least {{ minLengthError?.requiredLength }} characters long.</div>
+                    }
+
+                    @if(lastNameControl.dirty && lastNameControl.hasError('bannedWordValidator')) {
+                        @let bannedWordError = lastNameControl.getError('bannedWordValidator');
+                        <div class="text-error">Last name can't include "{{ bannedWordError }}" word.</div>
+                    }
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="form-group-box" ngModelGroup="email" confirmEmail>
+            <div class="form-control">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Email" [(ngModel)]="applicantForm.email.email"
+                    required email #emailControl="ngModel" checkEmail>
+                @if(emailControl.dirty && emailControl.hasError('required')) {
+                    <div class="text-error">Email is required.</div>
+                }
+
+                @if(emailControl.dirty && emailControl.hasError('email')) {
+                    <div class="text-error">Please enter a valid email like ***&#64;***</div>
+                }
+                
+                @if(emailControl.dirty && emailControl.hasError('emailExists')) {
+                    <div class="text-error">This email is already in use.</div>
+                }
+                
+                @if(emailControl.pending){
+                    <div class="text-info">Checking email availability...</div>
+                }
+            </div>
+
+            <div class="form-control">
+                <label for="confirm-email">Confirm Email:</label>
+                <input type="email" id="confirm-email" name="confirm-email" placeholder="Confirm Email" [(ngModel)]="applicantForm.email.confirmEmail"
+                    #confirmEmailControl="ngModel">
+                @if(confirmEmailControl.dirty && confirmEmailControl.hasError('required')) {
+                    <div class="text-error">Please confirm your email.</div>
+                }
+
+                @if(confirmEmailControl.dirty && confirmEmailControl.hasError('email')) {
+                    <div class="text-error">Please enter a valid email like ***&#64;***</div>
+                }
+
+                @if(emailControl.dirty && emailControl.hasError('required')){
+                    <div class="text-error">Email is required.</div>
+                }
+
+                @if(confirmEmailControl.dirty && confirmEmailControl.hasError('noMatch')) {
+                    <div class="text-error">Email and confirm email do not match.</div>
+                }
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="radio-group">
+        What your current employment status?
+        <div class="form-radio-control">
+            <input type="radio" id="employed" name="employmentStatus" value="employed" 
+                [(ngModel)]="applicantForm.employmentStatus" #employmentStatusControl="ngModel" required>
+            <label for="employed">Employed</label>
+        </div>
+        <div class="form-radio-control">
+            <input type="radio" id="unemployed" name="employmentStatus" value="unemployed" 
+                [(ngModel)]="applicantForm.employmentStatus" #employmentStatusControl="ngModel" required>
+            <label for="unemployed">Unemployed</label>
+        </div>
+        <div class="form-radio-control">
+            <input type="radio" id="self-employed" name="employmentStatus" value="self-employed" 
+                [(ngModel)]="applicantForm.employmentStatus" #employmentStatusControl="ngModel" required>
+            <label for="self-employed">Self-Employed</label>
+        </div>
+        <div class="form-radio-control">
+            <input type="radio" id="student" name="employmentStatus" value="student" 
+                [(ngModel)]="applicantForm.employmentStatus" #employmentStatusControl="ngModel" required>
+            <label for="student">Student</label>
+        </div>
+        @if(employmentStatusControl.dirty && employmentStatusControl.hasError('required')) {
+            <div class="text-error">Please select an employment status.</div>
+        }
+    </div>
+
+    <div class="form-control">
+        <label for="open-position">What position are you applying for?</label>
+        <select id="open-position" [(ngModel)]="applicantForm.position" name="open-position" required #positionControl="ngModel">
+            <option value="">Select a position</option>
+            <option value="frontend-developer">Frontend Developer</option>
+            <option value="backend-developer">Backend Developer</option>
+            <option value="fullstack-developer">Fullstack Developer</option>
+            <option value="designer">Designer</option>
+        </select>
+        @if(positionControl.dirty && positionControl.hasError('required')) {
+            <div class="text-error">Please select a position.</div>
+        }
+    </div>
+
+    <div class="form-control">
+        <label for="resume-link">Resume Link:</label>
+        <input type="url" id="resume-link" name="resumeLink" placeholder="Resume Link" 
+            [(ngModel)]="applicantForm.resumeLink" required pattern="https?://.+" #resumeLinkControl="ngModel">
+        
+        @if(resumeLinkControl.dirty && resumeLinkControl.hasError('required')) {
+            <div class="text-error">Resume link is required.</div>
+        }
+        @if(resumeLinkControl.dirty && resumeLinkControl.hasError('pattern')) {
+            <div class="text-error">Please enter a valid URL starting with http:// or https://.</div>
+        }
+    </div>
+
+    <div class="radio-group">
+        Verify Account with:
+        <div class="form-radio-control">
+            <label for="email-verification">Email</label>
+            <input type="radio" id="email-verification" name="verificationMethod" value="email" 
+                [(ngModel)]="verifyAccountWithMethod" [ngModelOptions]="{standalone: true}">
+        </div>
+        <div class="form-radio-control">
+            <label for="phone-verification">Phone</label>
+            <input type="radio" id="phone-verification" name="verificationMethod" value="phone" 
+                [(ngModel)]="verifyAccountWithMethod" [ngModelOptions]="{standalone: true}" 
+                (ngModelChange)="handlePhoneNumberInput()">
+        </div>
+    </div>
+
+    @if(verifyAccountWithMethod === 'phone') {
+    <div class="form-control">
+        <label for="phone-number">Phone Number:</label>
+        <input type="tel" id="phone-number" name="phoneNumber" placeholder="Phone Number" 
+            [(ngModel)]="applicantForm.phoneNumber" required minlength="9" maxlength="15" 
+            pattern="\d*" #phoneNumberControl="ngModel" (keypress)="allowOnlyNumbers($event)">
+        
+        @if(phoneNumberControl.dirty && phoneNumberControl.hasError('required')) {
+            <div class="text-error">Phone number is required.</div>
+        }
+        @if(phoneNumberControl.dirty && phoneNumberControl.hasError('minlength')) {
+            <div class="text-error">Phone number must be at least 9 characters long.</div>
+        }
+    </div>    
+    }
+
+    <div class="form-action">
+        <button class="btn btn-secondary" type="reset">Reset Application</button>
+        <button class="btn btn-primary" type="submit" 
+
+        >Submit Application</button>
+    </div>
+</form>

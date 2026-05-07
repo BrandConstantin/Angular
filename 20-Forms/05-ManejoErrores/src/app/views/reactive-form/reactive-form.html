@@ -1,0 +1,264 @@
+<pre>{{form.value | json}}</pre>
+
+<form autocomplete="off" [formGroup]="form" #ngForm="ngForm" (ngSubmit)="onSubmit()" (reset)="handleReset($event, ngForm)">
+    <h2>Job Application Form</h2>
+    <div class="form-group">
+        <h4>Personal Information</h4>
+        <div class="form-group-box" formGroupName="personalInfo">
+            <div class="form-control">
+                <label for="first-name">First Name</label>
+                <input 
+                    type="text"
+                    id="first-name"
+                    placeholder="First Name"
+                    formControlName="firstName"
+                >
+                <!-- @if(form.controls.personalInfo.get('firstName')?.invalid && form.controls.personalInfo.get('firstName')?.touched) {} -->
+
+                @let firstNameControl = form.controls.personalInfo.get('firstName');
+                @if(firstNameControl?.dirty && firstNameControl?.hasError('required')) {
+                    <div class="text-error">First name is required.</div>
+                }
+                @if(firstNameControl?.dirty && firstNameControl?.hasError('minlength')) {
+                    <div class="text-error">First name must be at least {{ firstNameControl?.getError('minlength')?.requiredLength }} characters long.</div>
+                }
+            </div>
+            <div class="form-control">
+                <label for="last-name">Last Name</label>
+                <input 
+                    type="text"
+                    id="last-name"
+                    placeholder="Last Name"
+                    formControlName="lastName"
+                >
+                @let lastNameControl = form.controls.personalInfo.get('lastName');
+                @if(lastNameControl?.dirty && lastNameControl?.hasError('required')) {
+                    <div class="text-error">Last name is required.</div>
+                }
+                @if(lastNameControl?.dirty && lastNameControl?.hasError('minlength')) {
+                    <div class="text-error">Last name must be at least 3 characters long.</div>
+                }
+                @if(lastNameControl?.dirty && lastNameControl?.hasError('bannedWordValidator')) {
+                    <div class="text-error">Last name contains inappropriate words: {{ lastNameControl?.getError('bannedWordValidator') }}</div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <h4>Email</h4>
+        <div class="form-group-box" formGroupName="email">
+            <div class="form-control">
+                <label for="email">Email</label>
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="jhon.doe@gmail.com"
+                    formControlName="email"
+                >
+                @let emailControl = form.controls.email.controls.email;
+                @if(emailControl?.dirty && emailControl?.hasError('required')) {
+                    <div class="text-error">Email is required.</div>
+                }
+                @if(emailControl?.dirty && emailControl?.hasError('email')) {
+                    <div class="text-error">Please enter a valid email address.</div>
+                }
+                @if(emailControl?.dirty && emailControl?.hasError('isAnExistingEmail')) {
+                    <div class="text-error">This email address is already taken.</div>
+                }
+                @if(emailControl?.pending) {
+                    <div class="text-info">Checking email availability...</div>
+                }
+            </div>
+            <div class="form-control">
+                <label for="confirm-email">Confirm Email</label>
+                <input
+                    type="email"
+                    id="confirm-email"
+                    placeholder="Confirm Email"
+                    formControlName="confirmEmail"
+                >
+                @let confirmEmailControl = form.controls.email.controls.confirmEmail;
+                @if(confirmEmailControl?.dirty && confirmEmailControl?.hasError('required')) {
+                    <div class="text-error">Confirming your email is required.</div>
+                }
+                @if(confirmEmailControl?.dirty && form.controls.email.hasError('noMatch')) {
+                    <div class="text-error">Email addresses do not match.</div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="radio-group">
+        What is your current employment status?
+        <div class="form-radio-control">
+            <input
+                type="radio"
+                id="employee"
+                formControlName="employmentStatus"
+                value="employee"
+            >
+            <label for="employee">Employee</label>
+        </div>
+        <div class="form-radio-control">
+            <input
+                type="radio"
+                id="unemployee"
+                formControlName="employmentStatus"
+                value="unemployee"
+            >
+            <label for="unemployee">Unemployee</label>
+        </div>
+        <div class="form-radio-control">
+            <input
+                type="radio"
+                id="self-employeed"
+                formControlName="employmentStatus"
+                value="self-employeed"
+            >
+            <label for="self-employeed">Self-Employeed</label>
+        </div>
+        <div class="form-radio-control">
+            <input
+                type="radio"
+                id="student"
+                formControlName="employmentStatus"
+                value="student"
+            >
+            <label for="student">Student</label>
+        </div>
+        @let employmentStatusControl = form.controls.employmentStatus;
+        @if(employmentStatusControl!.dirty && employmentStatusControl!.hasError('required')) {
+            <div class="text-error">Employment status is required.</div>
+        }
+    </div>
+    <div class="form-control">
+        <label for="open-positions">What position are you applying for?</label>
+        <select
+            id="open-positions"
+            formControlName="position"
+        >
+            <option value="">Select an option</option>
+            <option value="Angular Developer">Angular Developer</option>
+            <option value="PHP Developer">PHP Developer</option>
+            <option value="Java Developer">Java Developer</option>
+            <option value="Python Developer">Python Developer</option>
+        </select>
+        @let positionControl = form.controls.position;
+        @if(positionControl!.dirty && positionControl!.hasError('required')) {
+            <div class="text-error">Position is required.</div>
+        }
+    </div>
+
+    <div class="checkbox-group" formGroupName="additionalSkills">
+        <h4>Additional Skills</h4>
+        @for(skill of additionalSkills(); track skill) {
+            <div class="form-checkbox-control">
+                <input
+                    type="checkbox"
+                    [id]="skill"
+                    [formControlName]="skill"
+                >
+                <label [for]="skill">{{skill}}</label>
+            </div>
+        } @empty {
+            <p>Loading additional skills...</p>
+        }   
+    </div>
+
+    <div class="form-control">
+        <label for="resume-link">Please provide your resume link</label>
+        <input
+            type="text"
+            id="resume-link"
+            placeholder="www.example.com"
+            formControlName="resumeLink"
+        >
+        @let resumeLinkControl = form.controls.resumeLink;
+        @if(resumeLinkControl!.dirty && resumeLinkControl!.hasError('required')) {
+            <div class="text-error">Resume link is required.</div>
+        }
+        @if(resumeLinkControl!.dirty && resumeLinkControl!.hasError('pattern')) {
+            <div class="text-error">Please enter a valid URL.</div>
+        }
+    </div>
+
+    <div class="form-group">
+        <h4>References</h4>
+        <div class="form-group-box box-column" formArrayName="references">
+            <button class="btn btn-primary" type="button" (click)="addReference()">Add Reference</button>
+            <!-- <div class="form-control" *ngFor="let ref of form.get('references')?.controls; let i = index"> -->
+            @for(reference of form.controls.references.controls; track reference; let i = $index) {
+                <div class="form-control-box" [formGroupName]="i">
+                    <div class="form-control">
+                        <label for="name-{{i}}">Reference Name </label>
+                        <input
+                        type="text"
+                        id="name-{{i}}"
+                        placeholder="Name"
+                        formControlName="name"
+                        >
+                    </div>
+                    <div class="form-control">
+                        <label for="description-{{i}}">Reference Description {{i + 1}}</label>
+                        <input
+                        type="text"
+                        id="description-{{i}}"
+                        placeholder="Reference Details"
+                        formControlName="description"
+                        >
+                    </div>
+                    <button class="btn btn-error" type="button" (click)="removeReference(i)">Remove</button>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="radio-group">
+        Verify account with:
+        <div class="form-radio-control">
+            <input
+                type="radio"
+                name="verify-account"
+                id="verify-email"
+                [formControl]="verifyAccountWithControl"
+                value="email"
+            >
+            <label for="verify-email">Email</label>
+        </div>
+        <div class="form-radio-control">
+            <input
+                type="radio"
+                name="verify-account"
+                id="verify-phone"
+                [formControl]="verifyAccountWithControl"
+                value="phone"
+            >
+            <label for="verify-phone">Phone</label>
+        </div>
+    </div>
+
+    <div class="form-control">
+        <label for="phone-number">Phone Number</label>
+        <input
+            type="tel"
+            id="phone-number"
+            placeholder="Enter your phone number"
+            formControlName="phoneNumber"
+            (keypress)="handleKeyPress($event)"
+        >
+
+        @let phoneNumberControl = form.controls.phoneNumber;
+        @if(verifyAccountWithControl.value === 'phone' && (phoneNumberControl.pristine || phoneNumberControl.dirty) && phoneNumberControl?.hasError('required')) {
+            <div class="text-error">Phone number is required when verifying with phone.</div>
+        }
+        @if(verifyAccountWithControl.value === 'phone' && phoneNumberControl?.dirty && phoneNumberControl?.hasError('minlength')) {
+            <div class="text-error">Phone number must be at least <strong>{{ phoneNumberControl?.errors?.['minlength']?.requiredLength }}</strong> characters long.</div>
+        }
+    </div>
+
+    <div class="form-actions">
+        <button class="btn btn-secondary" type="reset">Reset</button>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </div>
+</form>

@@ -1,0 +1,25 @@
+:host{
+    display: flex;
+    width: fit-content;
+    cursor: pointer;
+}
+
+:host .disabled{
+    color: red;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+:host .star{
+    font-size: 2rem;
+    color: gold;
+    cursor: pointer;
+}
+
+:host .star:hover{
+    color: orange;
+}
+
+:host .star.filled{
+    color: rgb(231, 155, 14);
+}

@@ -26,18 +26,17 @@ export class Container implements OnInit{
 
   private _myValidators: MyValidatorInterface[] | null = inject(MY_VALIDATOR, {optional: true, self: true});
 
-  child = contentChild(CHILDREN_COMPONENT);
-
   // la forma nueva
   constructor(@Inject(MY_TOKEN) private _firstService: FirstService) {}
+
+  child = contentChild(CHILDREN_COMPONENT);
 
   ngOnInit(): void {
     console.log(this._firstService.message);
     console.log("Chield ... ", this.child()?.childrenName);
-    console.log("mi validador ", this._myValidators);
 
     this._myValidators?.forEach((validator) =>{
-      console.log(validator.validate());
+      validator.validate();
     })
   }
 }

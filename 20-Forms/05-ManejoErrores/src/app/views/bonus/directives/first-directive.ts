@@ -4,7 +4,7 @@ import { MY_VALIDATOR, MyValidatorInterface } from "../tokens/my-token";
 @Directive({
     selector: '[FirstValidator]',
     providers: [
-        {provide: MY_VALIDATOR, useExisting: FirstValidator, multi: true} // el multi para que el compoenente reciba un array de validadores
+        {provide: MY_VALIDATOR, useExisting: FirstValidator}
     ]
 })
 
@@ -13,6 +13,3 @@ export class FirstValidator implements MyValidatorInterface {
         console.log('FirstValidator');
     }
 }
-
-// error: ERROR TypeError: Cannot read properties of undefined (reading 'push')
-// por falta de multi: true en directive
