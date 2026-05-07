@@ -3221,3 +3221,95 @@ constructor() {
     });
   }
 ```
+
+## Injection Token
+Exportamos el token:
+```
+export const MY_TOKEN = new InjectionToken<FirstService>('My_TOKENN');
+
+export const CHILDREN_COMPONENT = new InjectionToken<ChildrenInterface>('Children_Component_Token');
+
+export const MY_VALIDATOR = new InjectionToken<MyValidatorInterface[]>('MY_VALIDATOR_TOKEN');
+
+export const CAR_BRAND = new InjectionToken('CAR_BRAND',{
+    providedIn: 'root', // injectar un token en el root de la app
+    factory: () => ([
+        'Toyota', 'Mazda', 'Subaru', 'Hyunday', 'Lexus'
+    ])
+});
+
+export interface ChildrenInterface {
+    childrenName: string
+}
+
+export interface MyValidatorInterface {
+    validate: () => void;
+}
+```
+
+Lo injectamos:
+```
+@Component({
+  selector: 'app-container',
+  imports: [],
+  templateUrl: './container.html',
+  styleUrl: './container.css',
+  providers: [
+    {provide: MY_TOKEN, useClass: FirstService},
+    {provide: CAR_BRAND, useValue: ['Seat', 'Skoda', 'VW']}
+  ]
+})
+export class Container implements OnInit{
+  carBrands = inject(CAR_BRAND, {skipSelf: true});
+
+  private _myValidators: MyValidatorInterface[] | null = inject(MY_VALIDATOR, {optional: true, self: true});
+
+  constructor(@Inject(MY_TOKEN) private _firstService: FirstService) {}
+
+  child = contentChild(CHILDREN_COMPONENT);
+
+  ngOnInit(): void {
+    console.log(this._firstService.message);
+    console.log("Chield ... ", this.child()?.childrenName);
+
+    this._myValidators?.forEach((validator) =>{
+      validator.validate();
+    })
+  }
+```
+
+Interface
+```
+@Component({
+  selector: 'app-first-child',
+  imports: [],
+  templateUrl: './first-child.html',
+  styleUrl: './first-child.css',
+  providers: [
+    {provide: CHILDREN_COMPONENT, useExisting: FirstChild}
+  ]
+})
+export class FirstChild implements ChildrenInterface{
+  childrenName = 'FirstChield';
+}
+```
+
+Directiva
+```
+@Directive({
+    selector: '[FirstDirective]',
+    providers: [
+        {provide: MY_VALIDATOR, useExisting: FirstValidator}
+    ]
+})
+
+export class FirstValidator implements MyValidatorInterface {
+    validate(){
+        console.log('First validator');
+    }
+}
+```
+
+HTML:
+```<app-container FirstValidator SecondValidator></app-container>```
+
