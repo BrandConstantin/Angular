@@ -1,0 +1,7 @@
+@for(star of stars(); track i; let i = $index) {
+    <span class="star" 
+        [class.filled]="rating() !== null && i < rating()!" [class.hovered]="i === hoveredIndex()" 
+        (click)="rate(i + 1)" 
+        (mouseover)="handleMouseOver(i)" (mouseleave)="handleMouseLeave()"
+    > &#9733; </span>
+}
